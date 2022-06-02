@@ -67,10 +67,10 @@ public class MainFrame extends JFrame{
 				String lozinka = new String(Lozinka.getPassword()).trim();
 				//ucitamo recepcioneri.csv
 				List<List<String>> recepcioneri = new ArrayList<>();
-				try (BufferedReader br = new BufferedReader(new FileReader("data/recepcioneri.csv"))) {
+				try (BufferedReader br = new BufferedReader(new FileReader("data/zaposleni.csv"))) {
 				    String linija;
 				    while ((linija = br.readLine()) != null) {
-				        String[] vrednosti = linija.split(",");
+				        String[] vrednosti = linija.split("|");
 				        recepcioneri.add(Arrays.asList(vrednosti));
 				        if ((korisnickoIme.equals(vrednosti[5])) && (lozinka.equals(vrednosti[6]))) {
 				        	
