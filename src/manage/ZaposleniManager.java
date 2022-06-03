@@ -29,7 +29,7 @@ public class ZaposleniManager {
 			while((linija = br.readLine()) != null) {
 				String[] vrednosti = linija.split(";");
 				SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
-				Zaposleni zaposleni = new Zaposleni(Integer.parseInt(vrednosti[0]), vrednosti[1], vrednosti[2], vrednosti[3], datum.parse(vrednosti[4]), vrednosti[5], vrednosti[6], vrednosti[8], Integer.parseInt(vrednosti[9]), Integer.parseInt(vrednosti[10]), vrednosti[11], vrednosti[7]);
+				Zaposleni zaposleni = new Zaposleni(Integer.parseInt(vrednosti[0]), vrednosti[1], vrednosti[2], vrednosti[3], vrednosti[4], datum.parse(vrednosti[5]), vrednosti[6], vrednosti[7], Integer.parseInt(vrednosti[9]), Integer.parseInt(vrednosti[10]), vrednosti[11], vrednosti[8]);
 				this.zaposleniLista.add(zaposleni);
 			}
 			br.close();
@@ -77,7 +77,10 @@ public class ZaposleniManager {
 		//random id
 		Random random = new Random();
 		int id = random.nextInt(8998) + 1001;
-		this.zaposleniLista.add(new Zaposleni(id, ime, prezime, pol, datum, telefon, adresa, korisnickoIme, strucnaSprema, staz, pozicija, lozinka));
+		while (find(id) != null) {
+			id = random.nextInt(8998) + 1001;
+		}
+		this.zaposleniLista.add(new Zaposleni(id, ime, prezime, pol, telefon, datum, adresa, korisnickoIme, strucnaSprema, staz, pozicija, lozinka));
 		this.saveData();
 	}
 	

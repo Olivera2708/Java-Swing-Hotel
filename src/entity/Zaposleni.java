@@ -9,7 +9,7 @@ public class Zaposleni extends Korisnik {
 	int staz;
 	double plata;
 	
-	public Zaposleni(int id, String ime, String prezime, String pol, Date datum, String telefon, String adresa, String korisnickoIme, int strucnaSprema, int staz, String pozicija, String lozinka) {
+	public Zaposleni(int id, String ime, String prezime, String pol, String telefon, Date datum, String adresa, String korisnickoIme, int strucnaSprema, int staz, String pozicija, String lozinka) {
 		super();
 		this.id = id;
 		this.ime = ime;
