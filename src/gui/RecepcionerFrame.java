@@ -39,13 +39,12 @@ public class RecepcionerFrame extends JFrame {
 	JTextField ime = new JTextField(40);
 	JTextField prezime = new JTextField(40);
 	JComboBox<String> pol = new JComboBox<>(opcije_pol);
-	JTextField jmbg = new JTextField(40);
+	JTextField pasos = new JTextField(40);
 	JTextField email = new JTextField(40);
 	JTextField telefon = new JTextField(40);
 	JFormattedTextField datum = new JFormattedTextField(datum_formatter);
 	JTextField adresa = new JTextField(40);
 	
-	private String jmbgRegex = "^(\\d{13})$";
 	private String datumRegex = "\\d{4}-\\d{2}-\\d{2}";
 	private String telefonRegex = "^(\\d{8,10})$";
 	private String emailRegex = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$";
@@ -100,8 +99,8 @@ public class RecepcionerFrame extends JFrame {
 		panel.add(prezime, "right, wrap, grow");
 		panel.add(new JLabel("Pol"));
 		panel.add(pol, "right, wrap, grow");
-		panel.add(new JLabel("JMBG"));
-		panel.add(jmbg, "right, wrap, grow");
+		panel.add(new JLabel("Broj pasoša"));
+		panel.add(pasos, "right, wrap, grow");
 		panel.add(new JLabel("Adresa"));
 		panel.add(adresa, "right, wrap, grow");
 		panel.add(new JLabel("Email"));
@@ -124,15 +123,18 @@ public class RecepcionerFrame extends JFrame {
 				String imeText = ime.getText().trim();
 				String prezimeText = prezime.getText().trim();
 				String polText = (String) pol.getSelectedItem();
-				String jmbgText = jmbg.getText().trim();
+				String pasosText = pasos.getText().trim();
 				String adresaText = adresa.getText().trim();
 				String emailText = email.getText().trim();
 				String telefonText = telefon.getText().trim();
 				String datumText = datum.getText().trim();
 				
-				if (imeText.equals("") || prezimeText.equals("") || jmbgText.equals("") ||
+				if (imeText.equals("") || prezimeText.equals("") || pasosText.equals("") ||
 						adresaText.equals("") || emailText.equals("") || telefonText.equals("") || datumText.equals("")) {
 					JOptionPane.showMessageDialog(null, "Potrebno je uneti sve podatke.", "Greška", JOptionPane.ERROR_MESSAGE);
+				}
+				else if (manageAll.getGostManager().vecPostojiKorisnicko(emailText)) {
+					JOptionPane.showMessageDialog(null, "Već postoji nalog sa ovom email adresom.", "Greška", JOptionPane.ERROR_MESSAGE);
 				}
 				else if (!emailText.matches(emailRegex)) {
 					JOptionPane.showMessageDialog(null, "Loš unos email adrese.", "Greška", JOptionPane.ERROR_MESSAGE);
@@ -140,18 +142,18 @@ public class RecepcionerFrame extends JFrame {
 				else if (!datumText.matches(datumRegex)){
 					JOptionPane.showMessageDialog(null, "Loš unos datuma.", "Greška", JOptionPane.ERROR_MESSAGE);
 				}
+				else if (pasosText.length() < 7){
+					JOptionPane.showMessageDialog(null, "Broj pasoša mora da ima bar 7 karaktera.", "Greška", JOptionPane.ERROR_MESSAGE);
+				}
 				else if (!telefonText.matches(telefonRegex)) {
 					JOptionPane.showMessageDialog(null, "Loš unos broja telefona.", "Greška", JOptionPane.ERROR_MESSAGE);
 				}
-				else if (!jmbgText.matches(jmbgRegex)) {
-					JOptionPane.showMessageDialog(null, "JMBG mora imati 13 brojeva.", "Greška", JOptionPane.ERROR_MESSAGE);
-				}
 				else {
 					try {
-						manageAll.getGostManager().add(imeText, prezimeText, polText, datum_formatter.parse(datumText), telefonText, adresaText, emailText, jmbgText);
+						manageAll.getGostManager().add(imeText, prezimeText, polText, datum_formatter.parse(datumText), telefonText, adresaText, emailText, pasosText);
 						ime.setText("");
 						prezime.setText("");
-						jmbg.setText("");
+						pasos.setText("");
 						adresa.setText("");
 						email.setText("");
 						telefon.setText("");

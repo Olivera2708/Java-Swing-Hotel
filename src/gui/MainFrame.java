@@ -108,10 +108,15 @@ public class MainFrame extends JFrame{
 				
 				String pozicija = z.getPozicija();
 				switch(pozicija) {
-				case "Recepcioner": 
+				case "Recepcioner":
 					RecepcionerFrame recepcionerFrame = new RecepcionerFrame(z);
 					recepcionerFrame.setVisible(true);
-				}
+					break;
+				case "Administrator":
+					AdministratorFrame administratorFrame = new AdministratorFrame(z);
+					administratorFrame.setVisible(true);
+					break;
+				}	
 			}
 		}
 		if (!found){

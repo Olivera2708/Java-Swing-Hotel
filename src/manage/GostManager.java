@@ -41,6 +41,16 @@ public class GostManager {
 		return true;
 	}
 	
+	public boolean vecPostojiKorisnicko(String korisnickoIme) {
+		for (Gost g: gostLista) {
+			if (g.getKorisnickoIme().equals(korisnickoIme)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
 	//lista svih gostiju
 	public List<Gost> getAll(){
 		return gostLista;

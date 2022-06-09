@@ -9,7 +9,7 @@ public class Zaposleni extends Korisnik {
 	int staz;
 	double plata;
 	
-	public Zaposleni(int id, String ime, String prezime, String pol, String telefon, Date datum, String adresa, String korisnickoIme, int strucnaSprema, int staz, String pozicija, String lozinka) {
+	public Zaposleni(int id, String ime, String prezime, String pol, Date datum, String telefon, String adresa, String korisnickoIme, String lozinka, int strucnaSprema, int staz, String pozicija) {
 		super();
 		this.id = id;
 		this.ime = ime;
@@ -19,10 +19,10 @@ public class Zaposleni extends Korisnik {
 		this.telefon = telefon;
 		this.adresa = adresa;
 		this.korisnickoIme = korisnickoIme;
+		this.lozinka = lozinka;
 		this.strucnaSprema = strucnaSprema;
 		this.pozicija = pozicija;
 		this.staz = staz;
-		this.lozinka = lozinka;
 		this.plata = 50000 * (this.strucnaSprema * 0.3 + 1 + this.staz/100);
 	}
 	

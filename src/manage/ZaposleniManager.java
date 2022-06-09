@@ -29,7 +29,7 @@ public class ZaposleniManager {
 			while((linija = br.readLine()) != null) {
 				String[] vrednosti = linija.split(";");
 				SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
-				Zaposleni zaposleni = new Zaposleni(Integer.parseInt(vrednosti[0]), vrednosti[1], vrednosti[2], vrednosti[3], vrednosti[4], datum.parse(vrednosti[5]), vrednosti[6], vrednosti[7], Integer.parseInt(vrednosti[9]), Integer.parseInt(vrednosti[10]), vrednosti[11], vrednosti[8]);
+				Zaposleni zaposleni = new Zaposleni(Integer.parseInt(vrednosti[0]), vrednosti[1], vrednosti[2], vrednosti[3], datum.parse(vrednosti[4]), vrednosti[5], vrednosti[6], vrednosti[7], vrednosti[8], Integer.parseInt(vrednosti[9]), Integer.parseInt(vrednosti[10]), vrednosti[11]);
 				this.zaposleniLista.add(zaposleni);
 			}
 			br.close();
@@ -38,6 +38,15 @@ public class ZaposleniManager {
 			return false;
 		}
 		return true;
+	}
+	
+	public boolean vecPostojiKorisnicko(String korisnickoIme) {
+		for (Zaposleni z: zaposleniLista) {
+			if (z.getKorisnickoIme().equals(korisnickoIme)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	//lista svih zaposlenih
@@ -73,19 +82,19 @@ public class ZaposleniManager {
 	}
 	
 	//dodaj novog zaposlenog
-	public void add(String ime, String prezime, String pol, Date datum, String telefon, String adresa, String korisnickoIme, int strucnaSprema, int staz, String pozicija, String lozinka) {
+	public void add(String ime, String prezime, String pol, Date datum, String telefon, String adresa, String korisnickoIme, String lozinka, int strucnaSprema, int staz, String pozicija) {
 		//random id
 		Random random = new Random();
 		int id = random.nextInt(8998) + 1001;
 		while (find(id) != null) {
 			id = random.nextInt(8998) + 1001;
 		}
-		this.zaposleniLista.add(new Zaposleni(id, ime, prezime, pol, telefon, datum, adresa, korisnickoIme, strucnaSprema, staz, pozicija, lozinka));
+		this.zaposleniLista.add(new Zaposleni(id, ime, prezime, pol, datum, telefon, adresa, korisnickoIme, lozinka, strucnaSprema, staz, pozicija));
 		this.saveData();
 	}
 	
 	//izmeni zaposlenog
-	public void edit(int id, String ime, String prezime, String pol, Date datum, String telefon, String adresa, String korisnickoIme, int strucnaSprema, int staz, String pozicija, String lozinka) {
+	public void edit(int id, String ime, String prezime, String pol, Date datum, String telefon, String adresa, String korisnickoIme, String lozinka, int strucnaSprema, int staz, String pozicija) {
 		Zaposleni z = this.find(id);
 		z.setIme(ime);
 		z.setPrezime(prezime);
@@ -94,9 +103,9 @@ public class ZaposleniManager {
 		z.setPol(pol);
 		z.setTelefon(telefon);
 		z.setKorisnickoIme(korisnickoIme);
+		z.setLozinka(lozinka);
 		z.setStucnaSprema(strucnaSprema);
 		z.setStaz(staz);
-		z.setLozinka(lozinka);
 		z.setPozicija(pozicija);
 	}
 	
