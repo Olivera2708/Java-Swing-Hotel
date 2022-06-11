@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Random;
 
 import entity.Gost;
-import entity.Zaposleni;
 
 public class GostManager {
 	private List<Gost> gostLista;

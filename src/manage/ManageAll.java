@@ -5,17 +5,28 @@ public class ManageAll {
 	
 	private ZaposleniManager zaposleniManager;
 	private GostManager gostManager;
+	private TipSobeManager tipSobeManager;
+	private SobeManager sobeManager;
+	private UslugeManager uslugeManager;
+	private RezervacijeManager rezervacijeManager;
+	private CenovnikSobaManager cenovnikSobaManager;
+	private CenovnikUslugaManager cenovnikUslugaManager;
 	
-	public ManageAll() {
+	private ManageAll() {
 		this.zaposleniManager = new ZaposleniManager();
 		this.gostManager = new GostManager();
+		this.tipSobeManager = new TipSobeManager();
+		this.sobeManager = new SobeManager(tipSobeManager);
+		this.uslugeManager = new UslugeManager();
+		this.rezervacijeManager = new RezervacijeManager(tipSobeManager, uslugeManager, gostManager);
+		this.cenovnikSobaManager = new CenovnikSobaManager(tipSobeManager);
+		this.cenovnikUslugaManager = new CenovnikUslugaManager(uslugeManager);
 	}
 	
 	//dobijanje instanci
 	public static ManageAll getInstance() {
 		if (manageAll == null) {
 			manageAll =  new ManageAll();
-			manageAll.loadData();
 		}
 		return manageAll;
 	}
@@ -23,6 +34,12 @@ public class ManageAll {
 	public void loadData() {
 		this.zaposleniManager.loadData();
 		this.gostManager.loadData();
+		this.tipSobeManager.loadData();
+		this.sobeManager.loadData();
+		this.uslugeManager.loadData();
+		this.rezervacijeManager.loadData();
+		this.cenovnikSobaManager.loadData();
+		this.cenovnikUslugaManager.loadData();
 	}
 
 	public ZaposleniManager getZaposleniManager() {
@@ -31,5 +48,29 @@ public class ManageAll {
 
 	public GostManager getGostManager() {
 		return gostManager;
+	}
+	
+	public TipSobeManager getTipSobeManager() {
+		return tipSobeManager;
+	}
+
+	public SobeManager getSobeManager() {
+		return sobeManager;
+	}
+	
+	public UslugeManager getUslugeManager() {
+		return uslugeManager;
+	}
+
+	public RezervacijeManager getRezervacijeManager() {
+		return rezervacijeManager;
+	}
+	
+	public CenovnikSobaManager getCenovnikSobaManager() {
+		return cenovnikSobaManager;
+	}
+
+	public CenovnikUslugaManager getCenovnikUslugaManager() {
+		return cenovnikUslugaManager;
 	}
 }

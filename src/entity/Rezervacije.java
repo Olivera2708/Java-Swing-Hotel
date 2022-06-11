@@ -3,6 +3,8 @@ package entity;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import enums.EnumStatusRezervacije;
+
 public class Rezervacije {
 	private int id;
 	private TipSobe tipSobe;
@@ -11,9 +13,9 @@ public class Rezervacije {
 	private Date odDatum;
 	private Date doDatum;
 	private int cena;
-	private String status;
+	private EnumStatusRezervacije status;
 	
-	public Rezervacije(int id, TipSobe tipSobe, Usluge usluge, Gost gost, Date odDatum, Date doDatum, int cena, String status) {
+	public Rezervacije(int id, TipSobe tipSobe, Usluge usluge, Gost gost, Date odDatum, Date doDatum, int cena, EnumStatusRezervacije status) {
 		this.id = id;
 		this.tipSobe = tipSobe;
 		this.usluge = usluge;
@@ -94,12 +96,12 @@ public class Rezervacije {
 	}
 
 
-	public String getStatus() {
+	public EnumStatusRezervacije getStatus() {
 		return status;
 	}
 
 
-	public void setStatus(String status) {
+	public void setStatus(EnumStatusRezervacije status) {
 		this.status = status;
 	}
 

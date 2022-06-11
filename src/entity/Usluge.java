@@ -1,5 +1,6 @@
 package entity;
 
+
 public class Usluge {
 	private int id;
 	private String tip;

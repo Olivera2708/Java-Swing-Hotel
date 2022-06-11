@@ -1,7 +1,5 @@
 package entity;
 
-import java.text.SimpleDateFormat;
-
 public class TipSobe {
 	private int id;
 	private String tip;

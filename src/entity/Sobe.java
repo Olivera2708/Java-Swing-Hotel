@@ -1,23 +1,24 @@
 package entity;
 
+import enums.EnumStatusSobe;
 
 public class Sobe {
-	private int id;
+	private int brojSobe;
 	private TipSobe tipSobe;
-	private String status;
+	private EnumStatusSobe status;
 	
-	public Sobe(int id, TipSobe tipSobe, String status) {
-		this.id = id;
+	public Sobe(int id, TipSobe tipSobe, EnumStatusSobe status) {
+		this.brojSobe = id;
 		this.tipSobe = tipSobe;
 		this.status = status;
 	}
 
-	public int getId() {
-		return id;
+	public int getBrojSobe() {
+		return brojSobe;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setBrojSobe(int id) {
+		this.brojSobe = id;
 	}
 
 	public TipSobe getTipSobe() {
@@ -28,16 +29,16 @@ public class Sobe {
 		this.tipSobe = tipSobe;
 	}
 
-	public String getStatus() {
+	public EnumStatusSobe getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(EnumStatusSobe status) {
 		this.status = status;
 	}
 	
 	public String toFileString() {
-		return id+";"+tipSobe.getId()+";"+status;
+		return brojSobe+";"+tipSobe.getId()+";"+status;
 	}
 	
 }

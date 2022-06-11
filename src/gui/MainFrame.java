@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 
 import entity.Gost;
 import entity.Zaposleni;
+import gui.administrator.AdministratorFrame;
 import manage.ManageAll;
 import net.miginfocom.swing.MigLayout;
 

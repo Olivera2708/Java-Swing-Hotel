@@ -41,7 +41,7 @@ public class ZaposleniManager {
 	}
 	
 	public boolean vecPostojiKorisnicko(String korisnickoIme) {
-		for (Zaposleni z: zaposleniLista) {
+		for (Zaposleni z: this.zaposleniLista) {
 			if (z.getKorisnickoIme().equals(korisnickoIme)) {
 				return true;
 			}
@@ -51,7 +51,18 @@ public class ZaposleniManager {
 	
 	//lista svih zaposlenih
 	public List<Zaposleni> getAll(){
-		return zaposleniLista;
+		return this.zaposleniLista;
+	}
+	
+	//za ucitavanje u tabelu
+	public String[][] ucitajPodatke(){
+		String[][] podaci = new String[this.zaposleniLista.size()][];
+		for (int i=0; i < this.zaposleniLista.size(); i++) {
+			Zaposleni z = this.zaposleniLista.get(i);
+			String[] dodaj = {Integer.toString(z.getId()), z.getIme(), z.getPrezime(), z.getKorisnickoIme(), z.getPozicija()};
+			podaci[i] = dodaj;
+		}
+		return podaci;
 	}
 	
 	//cuvanje podataka iz objekta nazad u csv
@@ -59,7 +70,7 @@ public class ZaposleniManager {
 		PrintWriter pw = null;
 		try {
 			pw = new PrintWriter(new FileWriter("data/zaposleni.csv", false));
-			for (Zaposleni z : zaposleniLista) {
+			for (Zaposleni z : this.zaposleniLista) {
 				pw.println(z.toFileString());
 			}
 			pw.close();
@@ -72,14 +83,25 @@ public class ZaposleniManager {
 	
 	//pronadji zaposlenog po id
 	public Zaposleni find(int id) {
-		for (int i = 0; i < zaposleniLista.size(); i++) {
-			Zaposleni z = zaposleniLista.get(i);
+		for (int i = 0; i < this.zaposleniLista.size(); i++) {
+			Zaposleni z = this.zaposleniLista.get(i);
 			if (z.getId() == id) {
 				return z;
 			}
 		}
 		return null;
 	}
+	
+	//pronadji zaposlenog po id
+		private int find_index(int id) {
+			for (int i = 0; i < this.zaposleniLista.size(); i++) {
+				Zaposleni z = this.zaposleniLista.get(i);
+				if (z.getId() == id) {
+					return i;
+				}
+			}
+			return -1;
+		}
 	
 	//dodaj novog zaposlenog
 	public void add(String ime, String prezime, String pol, Date datum, String telefon, String adresa, String korisnickoIme, String lozinka, int strucnaSprema, int staz, String pozicija) {
@@ -111,7 +133,7 @@ public class ZaposleniManager {
 	
 	//obrisi zaposlenog
 	public void remove(int id) {
-		Zaposleni z = find(id);
+		int z = find_index(id);
 		this.zaposleniLista.remove(z);
 		this.saveData();
 	}

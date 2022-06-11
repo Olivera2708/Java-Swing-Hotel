@@ -1,26 +1,17 @@
-package gui;
+package gui.administrator;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.regex.Pattern;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 
 import entity.Zaposleni;
 import manage.ManageAll;
@@ -32,154 +23,129 @@ public class AdministratorFrame extends JFrame {
 	
 	ManageAll manageAll = ManageAll.getInstance();
 	
-	JButton btnKreiraj = new JButton("Kreiraj");
-	String[] opcije_pol = {"Muško", "Žensko"};
-	String[] opcije_zaposleni = {"Sobarica", "Recepcioner"};
-	SimpleDateFormat datum_formatter = new SimpleDateFormat("yyyy-MM-dd");
-	JTextField ime = new JTextField(40);
-	JTextField prezime = new JTextField(40);
-	JComboBox<String> pol = new JComboBox<>(opcije_pol);
-	JComboBox<String> pozicija = new JComboBox<>(opcije_zaposleni);
-	JTextField korisnicko = new JTextField(40);
-	JTextField lozinka = new JTextField(40);
-	JTextField telefon = new JTextField(40);
-	JFormattedTextField datum = new JFormattedTextField(datum_formatter);
-	JTextField adresa = new JTextField(40);
-	JTextField strucna = new JTextField(1);
-	JTextField staz = new JTextField(2);
+	JButton btnOdjava;
+	JButton btnSobe;
+	JButton btnCenovnik;
+	JButton btnTipoviSoba;
+	JButton btnUsluge;
+	JButton btnGosti;
+	JButton btnRezervacije;
+	JButton btnZaposleni;
 	
-	private String datumRegex = "\\d{4}-\\d{2}-\\d{2}";
-	private String telefonRegex = "^(\\d{8,10})$";
-	private String strucnaRegex = "[1-8]";
-	private String stazRegex = "[0-9]|[1-3][0-9]|4[0-5]";
+	
 	
 	public AdministratorFrame (Zaposleni administrator) {
 		this.administrator = administrator;
 		
 		this.setTitle("Administator " + administrator.getIme() + " " + administrator.getPrezime());
 		this.setPreferredSize(new Dimension(1000, 700));
+		this.setResizable(false);
 		AdministratorGUI();
 		this.pack();
 		this.setLocationRelativeTo(null);
-		allButtons();
+		Dugmici();
 	}
 	
 	private void AdministratorGUI() {
-		JMenuBar meni = new JMenuBar();
-		JMenu noviZaposleni = new JMenu("Novi zaposleni");
-		JMenu odjava = new JMenu("Odjavi se");
+		getContentPane().setLayout(new MigLayout("", "200[200][45][150][45][200]200", "50[150]20[][]50[]20[]20[]20[]20[][][][]"));
 		
-		meni.add(noviZaposleni);
-		meni.add(odjava);
+		Dimension d = new Dimension(200,36);
 		
-		this.setJMenuBar(meni);
+		ImageIcon imageIcon = new ImageIcon(new ImageIcon("images/userIcon.png").getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
+		JLabel slika = new JLabel(imageIcon, JLabel.CENTER);
+		getContentPane().add(slika, "cell 2 0");
 		
-		prikaziNoviZaposleni();
+		JLabel lblNewLabel = new JLabel(administrator.getIme() + " " + administrator.getPrezime(), JLabel.CENTER);
+		lblNewLabel.setFont(lblNewLabel.getFont().deriveFont(20f));
+		getContentPane().add(lblNewLabel, "cell 2 1,alignx center");
+		
+		JLabel lblNewLabel_1 = new JLabel("Administrator", JLabel.CENTER);
+		lblNewLabel_1.setFont(lblNewLabel_1.getFont().deriveFont(16f));
+		getContentPane().add(lblNewLabel_1, "cell 2 2,alignx center");
+		
+		btnZaposleni = new JButton("Zaposleni");
+		btnZaposleni.setPreferredSize(d);
+		getContentPane().add(btnZaposleni, "cell 0 3");
+		
+		btnRezervacije = new JButton("Rezervacije");
+		btnRezervacije.setPreferredSize(d);
+		getContentPane().add(btnRezervacije, "cell 4 3");
+		
+		btnGosti = new JButton("Gosti");
+		btnGosti.setPreferredSize(d);
+		getContentPane().add(btnGosti, "cell 0 4");
+		
+		btnUsluge = new JButton("Dodatne usluge");
+		btnUsluge.setPreferredSize(d);
+		getContentPane().add(btnUsluge, "cell 4 4");
+		
+		btnTipoviSoba = new JButton("Tipovi soba");
+		btnTipoviSoba.setPreferredSize(d);
+		getContentPane().add(btnTipoviSoba, "cell 0 5");
+		
+		btnCenovnik = new JButton("Cenovnik");
+		btnCenovnik.setPreferredSize(d);
+		getContentPane().add(btnCenovnik, "cell 4 5");
+		
+		btnSobe = new JButton("Sobe");
+		btnSobe.setPreferredSize(d);
+		getContentPane().add(btnSobe, "cell 0 6,aligny top");
+		
+		btnOdjava = new JButton("Odjava");
+		btnOdjava.setPreferredSize(d);
+		getContentPane().add(btnOdjava, "cell 4 6");
 	}
 	
-	private void prikaziNoviZaposleni() {
-		JPanel panel = new JPanel(new MigLayout("wrap 2", "[]", "[]20[][][][][][][][][][][]20[]"));
-		Border margin = new EmptyBorder(40, 300, 10, 300);
-		panel.setBorder(margin);
+	private void Dugmici() {
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				areYouSure();
+			}	
+		});
 		
-		pol.setSelectedIndex(0);
-		datum.setColumns(40);
+		btnZaposleni.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AdministratorZaposleniFrame zaposleni = new AdministratorZaposleniFrame();
+				zaposleni.setVisible(true);
+			}
+		});
 		
-		JLabel naslov = new JLabel("Novi korisnik");
-		naslov.setFont(naslov.getFont().deriveFont(18f));
-		panel.add(naslov, "center, span 2");
+		btnGosti.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AdministratorGostiFrame gosti = new AdministratorGostiFrame();
+				gosti.setVisible(true);
+			}
+		});
 		
-		panel.add(new JLabel("Ime"));
-		panel.add(ime, "right, wrap, grow");
-		panel.add(new JLabel("Prezime"));
-		panel.add(prezime, "right, wrap, grow");
-		panel.add(new JLabel("Pol"));
-		panel.add(pol, "right, wrap, grow");
-		panel.add(new JLabel("Adresa"));
-		panel.add(adresa, "right, wrap, grow");
-		panel.add(new JLabel("Korisnicko ime"));
-		panel.add(korisnicko, "right, wrap, grow");
-		panel.add(new JLabel("Lozinka"));
-		panel.add(lozinka, "right, wrap, grow");
-		panel.add(new JLabel("Telefon"));
-		panel.add(telefon, "right, wrap, grow");
-		panel.add(new JLabel("Datum rođenja"));
-		panel.add(datum, "right, wrap, grow");
-		panel.add(new JLabel("Pozicija"));
-		panel.add(pozicija, "right, wrap, grow");
-		panel.add(new JLabel("Strucna sprema"));
-		panel.add(strucna, "right, wrap, grow");
-		panel.add(new JLabel("Staž"));
-		panel.add(staz, "right, wrap, grow");
+		btnTipoviSoba.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AdministratorTipSobeFrame tipSobe = new AdministratorTipSobeFrame();
+				tipSobe.setVisible(true);
+			}
+		});
 		
-		panel.add(btnKreiraj, "center, span 2");
-		
-		this.getContentPane().add(panel, BorderLayout.CENTER);
+		btnOdjava.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				dispose();
+				gui.MainFrame login = new gui.MainFrame();
+				login.setVisible(true);
+			}
+		});
 	}
-		
-	private void allButtons() {
-			
-			btnKreiraj.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					//upisi u objekat i sacuvaj u bazu
-					String imeText = ime.getText().trim();
-					String prezimeText = prezime.getText().trim();
-					String polText = (String) pol.getSelectedItem();
-					String adresaText = adresa.getText().trim();
-					String korisnickoText = korisnicko.getText().trim();
-					String lozinkaText = lozinka.getText().trim();
-					String telefonText = telefon.getText().trim();
-					String datumText = datum.getText().trim();
-					String pozicijaText = (String) pozicija.getSelectedItem();
-					String strucnaText = strucna.getText().trim();
-					String stazText = staz.getText().trim();
-					
-					
-					if (imeText.equals("") || prezimeText.equals("") || korisnickoText.equals("") ||
-							adresaText.equals("") || lozinkaText.equals("") || telefonText.equals("") || datumText.equals("") ||
-							strucnaText.equals("") || stazText.equals("")) {
-						JOptionPane.showMessageDialog(null, "Potrebno je uneti sve podatke.", "Greška", JOptionPane.ERROR_MESSAGE);
-					}
-					else if (!strucnaText.matches(strucnaRegex)) {
-						JOptionPane.showMessageDialog(null, "Strucna sprema mora biti broj izmedju 1 i 8.", "Greška", JOptionPane.ERROR_MESSAGE);
-					}
-					else if (!datumText.matches(datumRegex)){
-						JOptionPane.showMessageDialog(null, "Loš unos datuma.", "Greška", JOptionPane.ERROR_MESSAGE);
-					}
-					else if (!telefonText.matches(telefonRegex)) {
-						JOptionPane.showMessageDialog(null, "Loš unos broja telefona.", "Greška", JOptionPane.ERROR_MESSAGE);
-					}
-					else if (!stazText.matches(stazRegex)) {
-						JOptionPane.showMessageDialog(null, "Staž mora biti broj izmedju 0 i 45.", "Greška", JOptionPane.ERROR_MESSAGE);
-					}
-					else if (manageAll.getZaposleniManager().vecPostojiKorisnicko(korisnickoText)) {
-						JOptionPane.showMessageDialog(null, "Izabrano korisničko ime je zauzeto.", "Greška", JOptionPane.ERROR_MESSAGE);
-					}
-					else if (korisnickoText.length() < 5) {
-						JOptionPane.showMessageDialog(null, "Korisničko ime mora imati bar 5 karaktera.", "Greška", JOptionPane.ERROR_MESSAGE);
-					}
-					else if (lozinkaText.length() < 7) {
-						JOptionPane.showMessageDialog(null, "Lozinka ime mora imati bar 7 karaktera.", "Greška", JOptionPane.ERROR_MESSAGE);
-					}
-					else {
-						try {
-							manageAll.getZaposleniManager().add(imeText, prezimeText, polText, datum_formatter.parse(datumText), telefonText, adresaText, korisnickoText, lozinkaText, Integer.parseInt(strucnaText), Integer.parseInt(stazText), pozicijaText);
-							ime.setText("");
-							prezime.setText("");
-							korisnicko.setText("");
-							adresa.setText("");
-							lozinka.setText("");
-							telefon.setText("");
-							datum.setText("");
-							staz.setText("");
-							strucna.setText("");
-							JOptionPane.showMessageDialog(null, "Uspešno", "Informacija", JOptionPane.INFORMATION_MESSAGE);
-						} catch (ParseException e1) {
-							System.out.print("Greska");
-						}
-					}
-				}	
-			});
-	}
+	
+	private void areYouSure() {
+		String[] option = new String[2];
+		option[0] = "Da";
+		option[1] = "Ne";
+		int vrednost = JOptionPane.showOptionDialog(null, "Da li ste sigurni da želite da izađete iz aplikacije?", "Izlazak", 0, JOptionPane.INFORMATION_MESSAGE, null, option, null);
+		if (vrednost == JOptionPane.YES_OPTION) {
+			System.exit(0);
+		}	
+	}	
 }
