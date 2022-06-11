@@ -8,7 +8,7 @@ public class Main {
 		System.out.println("Dobrodosli...");
 		
 		//ucitavamo sve podatke
-		ManageAll manageAll = new ManageAll();
+		ManageAll manageAll = ManageAll.getInstance();
 		manageAll.loadData();
 		
 		//pozivamo glavni prozor
