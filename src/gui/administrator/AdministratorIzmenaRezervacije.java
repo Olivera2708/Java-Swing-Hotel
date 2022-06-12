@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -72,6 +74,14 @@ public class AdministratorIzmenaRezervacije extends JFrame{
 		JLabel naslov = new JLabel("Izmena podataka o rezervaciji");
 		naslov.setFont(naslov.getFont().deriveFont(18f));
 		panel.add(naslov, "center, span 2");
+		
+		int[] oznaceni = new int[rezervacija.getUsluge().size()];
+		
+		for (int i = 0; i < rezervacija.getUsluge().size(); i++) {
+			oznaceni[i] = Arrays.asList(opcije_usluge).indexOf(rezervacija.getUsluge().get(i).getTip());
+		}
+		
+		usluge.setSelectedIndices(oznaceni);
 		
 		status.setSelectedItem(String.valueOf(rezervacija.getStatus()));
 		tipSobe.setSelectedItem(rezervacija.getTipSobe().getTip());

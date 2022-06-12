@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -23,6 +24,7 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import entity.Usluge;
 import gui.models.RezervacijeModel;
 import gui.models.TipSobaModel;
 import manage.ManageAll;
@@ -104,6 +106,12 @@ public class AdministratorDodajRezervaciju extends JFrame{
 					String datumOdText = datumOd.getText();
 					String datumDoText = datumDo.getText();
 					
+					int[] lista_usluga = new int[uslugeText.length];
+					List<Usluge> sve_usluge = manageAll.getUslugeManager().getAll();
+					for (int i = 0; i < uslugeText.length; i++) {
+						lista_usluga[i] = sve_usluge.get(uslugeText[i]).getId();
+					}
+					
 					
 					if (!datumOdText.matches(datumRegex) || !datumDoText.matches(datumRegex)){
 						JOptionPane.showMessageDialog(null, "Loš unos datuma.", "Greška", JOptionPane.ERROR_MESSAGE);
@@ -114,7 +122,7 @@ public class AdministratorDodajRezervaciju extends JFrame{
 							}
 							else {
 								try {
-									manageAll.getRezervacijeManager().add(manageAll.getTipSobeManager().get_id(tipSobeText), uslugeText, manageAll.getGostManager().get_id(korisnikText), datum_formatter.parse(datumOdText), datum_formatter.parse(datumDoText), statusText);
+									manageAll.getRezervacijeManager().add(manageAll.getTipSobeManager().get_id(tipSobeText), lista_usluga, manageAll.getGostManager().get_id(korisnikText), datum_formatter.parse(datumOdText), datum_formatter.parse(datumDoText), statusText);
 								} catch (ParseException e1) {
 									// TODO Auto-generated catch block
 									e1.printStackTrace();
