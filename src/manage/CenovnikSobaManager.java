@@ -52,7 +52,7 @@ public class CenovnikSobaManager {
 	public boolean saveData() {
 		PrintWriter pw = null;
 		try {
-			pw = new PrintWriter(new FileWriter("data/zaposleni.csv", false));
+			pw = new PrintWriter(new FileWriter("data/cenovnik.csv", false));
 			for (CenaSobe s : cenovnikSobaLista) {
 				pw.println(s.toFileString());
 			}

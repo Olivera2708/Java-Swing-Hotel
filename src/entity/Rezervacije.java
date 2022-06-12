@@ -2,20 +2,22 @@ package entity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import enums.EnumStatusRezervacije;
 
 public class Rezervacije {
 	private int id;
 	private TipSobe tipSobe;
-	private Usluge usluge;
+	private List<Usluge> usluge;
 	private Gost gost;
 	private Date odDatum;
 	private Date doDatum;
+	private Sobe soba;
 	private int cena;
 	private EnumStatusRezervacije status;
 	
-	public Rezervacije(int id, TipSobe tipSobe, Usluge usluge, Gost gost, Date odDatum, Date doDatum, int cena, EnumStatusRezervacije status) {
+	public Rezervacije(int id, TipSobe tipSobe, List<Usluge> usluge, Gost gost, Date odDatum, Date doDatum, int cena, EnumStatusRezervacije status) {
 		this.id = id;
 		this.tipSobe = tipSobe;
 		this.usluge = usluge;
@@ -24,8 +26,17 @@ public class Rezervacije {
 		this.doDatum = doDatum;
 		this.cena = cena;
 		this.status = status;
+		this.soba = null;
 	}
 	
+	public Sobe getSoba() {
+		return soba;
+	}
+
+	public void setSoba(Sobe soba) {
+		this.soba = soba;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -46,13 +57,13 @@ public class Rezervacije {
 	}
 
 
-	public Usluge getUsluge() {
+	public List<Usluge> getUsluge() {
 		return usluge;
 	}
 
 
-	public void setUsluge(Usluge usluge) {
-		this.usluge = usluge;
+	public void setUsluge(List<Usluge> lista_usluga) {
+		this.usluge = lista_usluga;
 	}
 
 
@@ -110,7 +121,15 @@ public class Rezervacije {
 		SimpleDateFormat datum_formatter = new SimpleDateFormat("yyyy-MM-dd");
 		String od_datum_string = datum_formatter.format(odDatum);
 		String do_datum_string = datum_formatter.format(doDatum);
+		
+		String us = "";
+		if (!usluge.isEmpty()) {
+			for(Usluge u: usluge) {
+				us += u.getId() + ",";
+			}
+			us.substring(0, us.length()-1);
+		}
 	
-		return id+";"+tipSobe.getId()+";"+usluge.getId()+";"+gost.getKorisnickoIme()+";"+od_datum_string+";"+do_datum_string+";"+cena+";"+status;
+		return id+";"+tipSobe.getId()+";"+us+";"+gost.getKorisnickoIme()+";"+od_datum_string+";"+do_datum_string+";"+cena+";"+status;
 	}
 }

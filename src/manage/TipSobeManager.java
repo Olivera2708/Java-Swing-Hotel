@@ -41,11 +41,20 @@ public class TipSobeManager {
 		return tipSobeLista;
 	}
 	
+	//vraca listu naziva
+	public String[] getNames() {
+		String[] string = new String[this.tipSobeLista.size()];
+		for (int i = 0; i < this.tipSobeLista.size(); i++) {
+			string[i] = this.tipSobeLista.get(i).getTip();
+		}
+		return string;
+	}
+	
 	//cuvanje podataka iz objekta nazad u csv
 	public boolean saveData() {
 		PrintWriter pw = null;
 		try {
-			pw = new PrintWriter(new FileWriter("data/zaposleni.csv", false));
+			pw = new PrintWriter(new FileWriter("data/tipsoba.csv", false));
 			for (TipSobe s : tipSobeLista) {
 				pw.println(s.toFileString());
 			}
@@ -67,6 +76,17 @@ public class TipSobeManager {
 		}
 		return null;
 	}
+	
+	//pronadji tip sobe po opisu
+		public int get_id(String opis) {
+			for (int i = 0; i < tipSobeLista.size(); i++) {
+				TipSobe s = tipSobeLista.get(i);
+				if (s.getTip().equals(opis)) {
+					return s.getId();
+				}
+			}
+			return -1;
+		}
 	
 	//dodaj novi tip sobe
 	public void edit(int id, String tip) {

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import entity.Usluge;
 
@@ -40,11 +41,20 @@ public class UslugeManager {
 		return uslugeLista;
 	}
 	
+	//vraca listu naziva
+		public String[] getNames() {
+			String[] string = new String[this.uslugeLista.size()];
+			for (int i = 0; i < this.uslugeLista.size(); i++) {
+				string[i] = this.uslugeLista.get(i).getTip();
+			}
+			return string;
+		}
+	
 	//cuvanje podataka iz objekta nazad u csv
 	public boolean saveData() {
 		PrintWriter pw = null;
 		try {
-			pw = new PrintWriter(new FileWriter("data/zaposleni.csv", false));
+			pw = new PrintWriter(new FileWriter("data/tipsoba.csv", false));
 			for (Usluge s : uslugeLista) {
 				pw.println(s.toFileString());
 			}
@@ -75,7 +85,12 @@ public class UslugeManager {
 	}
 	
 	//izmeni uslugu
-	public void add(int id, String usluga) {
+	public void add(String usluga) {
+		Random random = new Random();
+		int id = random.nextInt(8998) + 1001;
+		while (find(id) != null) {
+			id = random.nextInt(8998) + 1001;
+		}
 		this.uslugeLista.add(new Usluge(id, usluga));
 		this.saveData();
 	}

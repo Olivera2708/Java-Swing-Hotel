@@ -47,7 +47,7 @@ public class SobeManager {
 	public boolean saveData() {
 		PrintWriter pw = null;
 		try {
-			pw = new PrintWriter(new FileWriter("data/zaposleni.csv", false));
+			pw = new PrintWriter(new FileWriter("data/sobe.csv", false));
 			for (Sobe s : sobeLista) {
 				pw.println(s.toFileString());
 			}
@@ -71,9 +71,9 @@ public class SobeManager {
 	}
 	
 	//izmeni sobu
-	public void edit(int id, int tipSobe, String status) {
+	public void edit(int id, int novi_id, int tipSobe, String status) {
 		Sobe s = this.find(id);
-		s.setBrojSobe(id);
+		s.setBrojSobe(novi_id);
 		s.setTipSobe(tipSobeManager.find(tipSobe));
 		s.setStatus(EnumStatusSobe.valueOf(status));
 	}

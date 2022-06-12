@@ -55,6 +55,15 @@ public class GostManager {
 		return gostLista;
 	}
 	
+	//vraca listu naziva
+		public String[] getNames() {
+			String[] string = new String[this.gostLista.size()];
+			for (int i = 0; i < this.gostLista.size(); i++) {
+				string[i] = this.gostLista.get(i).getKorisnickoIme();
+			}
+			return string;
+		}
+	
 	//cuvanje podataka iz objekta nazad u csv
 	public boolean saveData() {
 		PrintWriter pw = null;
@@ -81,6 +90,27 @@ public class GostManager {
 		}
 		return null;
 	}
+	
+	public int get_id(String koriscniko) {
+		for (int i = 0; i < gostLista.size(); i++) {
+			Gost z = gostLista.get(i);
+			if (z.getKorisnickoIme().equals(koriscniko)) {
+				return z.getId();
+			}
+		}
+		return -1;
+	}
+	
+	//pronadji zaposlenog po id
+		public Gost find_name(String name) {
+			for (int i = 0; i < gostLista.size(); i++) {
+				Gost z = gostLista.get(i);
+				if (z.getKorisnickoIme().equals(name)) {
+					return z;
+				}
+			}
+			return null;
+		}
 	
 	//dodaj novog zaposlenog
 	public void add(String ime, String prezime, String pol, Date datum, String telefon, String adresa, String korisnickoIme, String lozinka) {

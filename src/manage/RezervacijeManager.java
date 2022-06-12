@@ -14,6 +14,7 @@ import java.util.Random;
 
 import enums.EnumStatusRezervacije;
 import entity.Rezervacije;
+import entity.Usluge;
 
 public class RezervacijeManager {
 	private TipSobeManager tipSobeManager;
@@ -36,7 +37,14 @@ public class RezervacijeManager {
 			while((linija = br.readLine()) != null) {
 				String[] vrednosti = linija.split(";");
 				SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
-				Rezervacije rezervacije = new Rezervacije(Integer.parseInt(vrednosti[0]), tipSobeManager.find(Integer.parseInt(vrednosti[1])), uslugeManager.find(Integer.parseInt(vrednosti[2])), gostManager.find(Integer.parseInt(vrednosti[3])), datum.parse(vrednosti[4]), datum.parse(vrednosti[5]), Integer.parseInt(vrednosti[6]), EnumStatusRezervacije.valueOf(vrednosti[7]));
+				List<Usluge> lista_usluga = new ArrayList<Usluge>();
+				String[] usluge = vrednosti[2].split(",");
+				if (usluge.length != 0) {
+					for (String s: usluge) {
+						lista_usluga.add(uslugeManager.find(Integer.parseInt(s)));
+					}
+				}
+				Rezervacije rezervacije = new Rezervacije(Integer.parseInt(vrednosti[0]), tipSobeManager.find(Integer.parseInt(vrednosti[1])), lista_usluga, gostManager.find_name(vrednosti[3]), datum.parse(vrednosti[4]), datum.parse(vrednosti[5]), Integer.parseInt(vrednosti[6]), EnumStatusRezervacije.valueOf(vrednosti[7]));
 				this.rezervacijeLista.add(rezervacije);
 			}
 			br.close();
@@ -56,7 +64,7 @@ public class RezervacijeManager {
 	public boolean saveData() {
 		PrintWriter pw = null;
 		try {
-			pw = new PrintWriter(new FileWriter("data/zaposleni.csv", false));
+			pw = new PrintWriter(new FileWriter("data/rezervacije.csv", false));
 			for (Rezervacije s : rezervacijeLista) {
 				pw.println(s.toFileString());
 			}
@@ -80,22 +88,34 @@ public class RezervacijeManager {
 	}
 	
 	//dodaj novu rezervaciju
-	public void edit(int id, int tipSobe, int usluge, int gost, Date odDatum, Date doDatum, int cena, String status) {
+	public void edit(int id, int tipSobe, int[] usluge, int gost, Date odDatum, Date doDatum, String status) {
 		Rezervacije s = this.find(id);
 		s.setTipSobe(tipSobeManager.find(tipSobe));
-		s.setUsluge(uslugeManager.find(usluge));
+		List<Usluge> lista_usluga = new ArrayList<Usluge>();
+		for (int sa: usluge) {
+			lista_usluga.add(uslugeManager.find(sa));
+		}
+		s.setUsluge(lista_usluga);
 		s.setGost(gostManager.find(gost));
 		s.setOdDatum(odDatum);
-		s.setOdDatum(doDatum);
-		s.setCena(cena);
+		s.setDoDatum(doDatum);
+		//Izracunaj cenu na osnovu datuma
 		s.setStatus(EnumStatusRezervacije.valueOf(status));
+		this.saveData();
 	}
 	
 	//izmeni rezervaciju
-	public void add(int tipSobe, int usluge, int gost, Date odDatum, Date doDatum, int cena, String status) {
+	public void add(int tipSobe, int[] usluge, int gost, Date odDatum, Date doDatum, String status) {
 		Random random = new Random();
 		int id = random.nextInt(8998) + 1001;
-		this.rezervacijeLista.add(new Rezervacije(id, tipSobeManager.find(tipSobe), uslugeManager.find(usluge), gostManager.find(gost), odDatum, doDatum, cena, EnumStatusRezervacije.valueOf(status)));
+		//Izracunaj cenu 
+		int cena = 0;
+		List<Usluge> lista_usluga = new ArrayList<Usluge>();
+		for (int s: usluge) {
+			System.out.print(s);
+			lista_usluga.add(uslugeManager.find(s));
+		}
+		this.rezervacijeLista.add(new Rezervacije(id, tipSobeManager.find(tipSobe), lista_usluga, gostManager.find(gost), odDatum, doDatum, cena, EnumStatusRezervacije.valueOf(status)));
 		this.saveData();
 	}
 	

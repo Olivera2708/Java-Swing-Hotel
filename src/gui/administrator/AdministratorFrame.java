@@ -128,6 +128,30 @@ public class AdministratorFrame extends JFrame {
 			}
 		});
 		
+		btnUsluge.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AdministratorUslugeFrame usluga = new AdministratorUslugeFrame();
+				usluga.setVisible(true);
+			}
+		});
+		
+		btnSobe.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AdministratorSobeFrame soba = new AdministratorSobeFrame();
+				soba.setVisible(true);
+			}
+		});
+		
+		btnRezervacije.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AdministratorRezervacijeFrame rezervacije = new AdministratorRezervacijeFrame();
+				rezervacije.setVisible(true);
+			}
+		});
+		
 		btnOdjava.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
