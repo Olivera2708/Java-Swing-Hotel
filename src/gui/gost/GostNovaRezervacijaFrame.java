@@ -126,7 +126,7 @@ public class GostNovaRezervacijaFrame extends JFrame{
 				String datumDoText = datumDo.getText();
 				boolean greska = false;
 				try {
-					if (datum_formatter.parse(datumOdText).after(datum_formatter.parse(datumDoText)) || datum_formatter.parse(datumOdText).equals(datum_formatter.parse(datumDoText))) {
+					if (datum_formatter.parse(datumOdText).after(datum_formatter.parse(datumDoText)) || datum_formatter.parse(datumOdText).equals(datum_formatter.parse(datumDoText)) || datum_formatter.parse(datumOdText).before(new java.util.Date())) {
 						JOptionPane.showMessageDialog(null, "Loš unos datuma.", "Greška", JOptionPane.ERROR_MESSAGE);
 						greska = true;
 					}
@@ -139,6 +139,9 @@ public class GostNovaRezervacijaFrame extends JFrame{
 					try {
 						opcije_tip = manageAll.getRezervacijeManager().getSlobodneSobe(datum_formatter.parse(datumOdText), datum_formatter.parse(datumDoText)).toArray(new String[0]);
 						tipSobe.removeAllItems();
+						if (opcije_tip.length == 0) {
+							JOptionPane.showMessageDialog(null, "Ne postoje slobodne sobe za izabrani datum.", "Informacija", JOptionPane.INFORMATION_MESSAGE);
+						}
 						for (String s: opcije_tip) {
 							tipSobe.addItem(s);
 						}
