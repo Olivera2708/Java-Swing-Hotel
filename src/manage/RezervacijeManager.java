@@ -17,6 +17,8 @@ import javax.swing.JOptionPane;
 
 import enums.EnumStatusRezervacije;
 import entity.Rezervacije;
+import entity.Sobe;
+import entity.TipSobe;
 import entity.Usluge;
 
 public class RezervacijeManager {
@@ -25,9 +27,10 @@ public class RezervacijeManager {
 	private GostManager gostManager;
 	private CenovnikUslugaManager cenovnikUslugaManager;
 	private CenovnikSobaManager cenovnikSobaManager;
+	private SobeManager sobeManager;
 	private List<Rezervacije> rezervacijeLista;
 	
-	public RezervacijeManager(TipSobeManager tipSobeManager, UslugeManager uslugeManager, GostManager gostManager, CenovnikUslugaManager cenovnikUslugaManager, CenovnikSobaManager cenovnikSobaManager) {
+	public RezervacijeManager(TipSobeManager tipSobeManager, UslugeManager uslugeManager, GostManager gostManager, CenovnikUslugaManager cenovnikUslugaManager, CenovnikSobaManager cenovnikSobaManager, SobeManager sobeManager) {
 		//super(); ne znam jel treba?
 		this.rezervacijeLista = new ArrayList<Rezervacije>();
 		this.tipSobeManager = tipSobeManager;
@@ -35,6 +38,7 @@ public class RezervacijeManager {
 		this.uslugeManager = uslugeManager;
 		this.cenovnikSobaManager = cenovnikSobaManager;
 		this.cenovnikUslugaManager = cenovnikUslugaManager;
+		this.sobeManager = sobeManager;
 	}
 	
 	//ucitavanje podataka u objekat
@@ -95,7 +99,7 @@ public class RezervacijeManager {
 	}
 	
 	//izracunaj cenu
-	private int cena(int tipSobe, int[] usluge, Date odDatum, Date doDatum) {
+	public int cena(int tipSobe, int[] usluge, Date odDatum, Date doDatum, boolean prikaz) {
 		int cena = 0;
 		//idemo kroz svaki dan i racunamo cenu za tipsobe i usluge za taj dan
 		int dana = (int) ChronoUnit.DAYS.between(odDatum.toInstant(), doDatum.toInstant());
@@ -106,7 +110,9 @@ public class RezervacijeManager {
 			//cena tipsobe
 			int nova_cena = cenovnikSobaManager.get_cena(tipSobe, provera);
 			if (nova_cena == -1) {
-				JOptionPane.showMessageDialog(null, "Ne postoji cenovnik za traženi period.", "Greška", JOptionPane.ERROR_MESSAGE);
+				if (prikaz) {
+					JOptionPane.showMessageDialog(null, "Ne postoji cenovnik za traženi period.", "Greška", JOptionPane.ERROR_MESSAGE);
+				}
 				return -1;
 			}
 			else {
@@ -117,7 +123,9 @@ public class RezervacijeManager {
 			for (int sa: usluge) {
 				int nova_cena_u = cenovnikUslugaManager.get_cena(sa, provera);
 				if (nova_cena_u == -1) {
-					JOptionPane.showMessageDialog(null, "Ne postoji cenovnik za traženi period.", "Greška", JOptionPane.ERROR_MESSAGE);
+					if (prikaz) {
+						JOptionPane.showMessageDialog(null, "Ne postoji cenovnik za traženi period.", "Greška", JOptionPane.ERROR_MESSAGE);
+					}
 					return -1;
 				}
 				else {
@@ -126,14 +134,86 @@ public class RezervacijeManager {
 			}
 		}
 		return cena;
-		
 	}
+	
+	public int cenaUsluge(int usluge, Date odDatum, Date doDatum) {
+		int cena = 0;
+		//idemo kroz svaki dan i racunamo cenu za tipsobe i usluge za taj dan
+		int dana = (int) ChronoUnit.DAYS.between(odDatum.toInstant(), doDatum.toInstant());
+		for (int i = 0; i <= dana; i++) {
+			
+			Date provera = new Date(odDatum.getTime() + i * (1000 * 60 * 60 * 24));
+			
+			int nova_cena_u = cenovnikUslugaManager.get_cena(usluge, provera);
+			if (nova_cena_u == -1) {
+				return -1;
+			}
+			else {
+				cena += nova_cena_u;
+			}	
+		}
+		return cena;
+	}
+	
+	public int brojSlobodnihSoba(int id_tipaSobe, Date datumOd, Date datumDo) {
+		//predbroj koliko ima izabranog tipa soba
+		int ukupno = 0;
+		for (Sobe s: sobeManager.getAll()) {
+			if (s.getTipSobe().getId() == id_tipaSobe) {
+				ukupno++;
+			}
+		}
+		
+		int zauzete = 0;
+		for (Rezervacije s: rezervacijeLista) {
+			if (s.getTipSobe().getId() == id_tipaSobe) {
+				if ((s.getOdDatum().before(datumDo) && s.getDoDatum().after(datumOd))
+						|| (s.getDoDatum().before(datumDo) && s.getDoDatum().after(datumOd))
+						|| s.getDoDatum().equals(datumOd) || s.getOdDatum().equals(datumDo)) {
+					zauzete++;
+				}
+			}
+		}
+		return ukupno - zauzete;
+	}
+	
+	//vraca za izabran datum sta se sve moze rezervisati
+	public List<String> getSlobodneSobe(Date datumOd, Date datumDo){
+		List<String> sve = new ArrayList<String>();
+		//za svaki tip sobe
+		for (TipSobe s: tipSobeManager.getAll()) {
+			if (brojSlobodnihSoba(s.getId(), datumOd, datumDo) == 0) {
+				continue;
+			}
+			//provara jel moze da se izracuna cena za tip sobe
+			int[] usluge = new int[]{};
+			if (cena(s.getId(), usluge, datumOd, datumDo, false) == -1){
+				continue;
+			}
+			sve.add(s.getTip());
+		}
+		return sve;
+	}
+	
+	//vraca listu usluga koje imaju cenovnik definisan
+		public List<String> getUsluge(Date datumOd, Date datumDo){
+			List<String> sve = new ArrayList<String>();
+			//za svaki tip sobe
+			for (Usluge s: uslugeManager.getAll()) {
+				//provara jel moze da se izracuna cena za tip sobe
+				if (cenaUsluge(s.getId(), datumOd, datumDo) == -1){
+					continue;
+				}
+				sve.add(s.getTip());
+			}
+			return sve;
+		}
 	
 	//dodaj novu rezervaciju
 	public boolean edit(int id, int tipSobe, int[] usluge, int gost, Date odDatum, Date doDatum, String status) {
 		Rezervacije s = this.find(id);
 		//Izracunaj cenu na osnovu datuma
-		int cena = cena(tipSobe, usluge, odDatum, doDatum);
+		int cena = cena(tipSobe, usluge, odDatum, doDatum, true);
 		if (cena == -1) {
 			return false;
 		}
@@ -161,7 +241,7 @@ public class RezervacijeManager {
 		for (int s: usluge) {
 			lista_usluga.add(uslugeManager.find(s));
 		}
-		int cena = cena(tipSobe, usluge, odDatum, doDatum);
+		int cena = cena(tipSobe, usluge, odDatum, doDatum, true);
 		if (cena == -1) {
 			return false;
 		}

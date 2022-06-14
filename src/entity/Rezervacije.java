@@ -127,7 +127,7 @@ public class Rezervacije {
 			for(Usluge u: usluge) {
 				us += u.getId() + ",";
 			}
-			us.substring(0, us.length()-1);
+			us = us.substring(0, us.length()-1);
 		}
 	
 		return id+";"+tipSobe.getId()+";"+us+";"+gost.getKorisnickoIme()+";"+od_datum_string+";"+do_datum_string+";"+cena+";"+status;
