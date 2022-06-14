@@ -77,11 +77,22 @@ public class UslugeManager {
 		return null;
 	}
 	
+	public int get_id(String opis) {
+		for (int i = 0; i < uslugeLista.size(); i++) {
+			Usluge s = uslugeLista.get(i);
+			if (s.getTip().equals(opis)) {
+				return s.getId();
+			}
+		}
+		return -1;
+	}
+	
 	//dodaj novu uslugu
 	public void edit(int id, String usluga) {
 		Usluge s = this.find(id);
 		s.setId(id);
 		s.setTip(usluga);
+		saveData();
 	}
 	
 	//izmeni uslugu

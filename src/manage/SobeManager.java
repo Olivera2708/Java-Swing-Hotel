@@ -76,6 +76,7 @@ public class SobeManager {
 		s.setBrojSobe(novi_id);
 		s.setTipSobe(tipSobeManager.find(tipSobe));
 		s.setStatus(EnumStatusSobe.valueOf(status));
+		saveData();
 	}
 	
 	//dodaj novu sobu

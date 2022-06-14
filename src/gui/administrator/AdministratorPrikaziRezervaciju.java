@@ -27,7 +27,7 @@ public class AdministratorPrikaziRezervaciju extends JFrame{
 		this.r = r;
 		
 		this.setTitle("Rezervacije");
-		this.setPreferredSize(new Dimension(300, 400));
+		this.setPreferredSize(new Dimension(600, 400));
 		this.setResizable(false);
 		prikaziNovigost();
 		this.pack();
@@ -36,7 +36,7 @@ public class AdministratorPrikaziRezervaciju extends JFrame{
 	
 	private void prikaziNovigost() {
 		JPanel panel = new JPanel(new MigLayout("wrap 2", "[]20[]", "[]40[][][][][][][]"));
-		Border margin = new EmptyBorder(20, 30, 10, 10);
+		Border margin = new EmptyBorder(20, 150, 10, 10);
 		panel.setBorder(margin);
 		
 		JLabel naslov = new JLabel("Prikaz rezervacije");
@@ -63,6 +63,8 @@ public class AdministratorPrikaziRezervaciju extends JFrame{
 		panel.add(new JLabel(datum_formatter.format(r.getOdDatum())), "right, wrap, grow");
 		panel.add(new JLabel("Datum do"));
 		panel.add(new JLabel(datum_formatter.format(r.getDoDatum())), "right, wrap, grow");
+		panel.add(new JLabel("Cena"));
+		panel.add(new JLabel(String.valueOf(r.getCena())), "right, wrap, grow");
 		panel.add(new JLabel("Status"));
 		panel.add(new JLabel(String.valueOf(r.getStatus())), "right, wrap, grow");
 		

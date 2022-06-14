@@ -132,6 +132,7 @@ public class GostManager {
 		z.setTelefon(telefon);
 		z.setKorisnickoIme(korisnickoIme);
 		z.setLozinka(lozinka);
+		saveData();
 	}
 	
 	//obrisi zaposlenog

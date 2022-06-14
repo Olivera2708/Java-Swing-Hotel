@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import entity.Gost;
 import entity.Zaposleni;
 import gui.administrator.AdministratorFrame;
+import gui.gost.GostFrame;
 import manage.ManageAll;
 import net.miginfocom.swing.MigLayout;
 
@@ -99,6 +100,8 @@ public class MainFrame extends JFrame{
 				found = true;
 				this.setVisible(false);
 				this.dispose();
+				GostFrame gostFrame = new GostFrame(g);
+				gostFrame.setVisible(true);
 			}
 		}
 		for (Zaposleni z: manageAll.getZaposleniManager().getAll()) {

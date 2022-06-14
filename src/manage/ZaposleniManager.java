@@ -129,6 +129,7 @@ public class ZaposleniManager {
 		z.setStucnaSprema(strucnaSprema);
 		z.setStaz(staz);
 		z.setPozicija(pozicija);
+		saveData();
 	}
 	
 	//obrisi zaposlenog

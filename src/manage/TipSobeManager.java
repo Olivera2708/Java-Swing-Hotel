@@ -93,6 +93,7 @@ public class TipSobeManager {
 		TipSobe s = this.find(id);
 		s.setId(id);
 		s.setTip(tip);
+		saveData();
 	}
 	
 	//izmeni tip sobe

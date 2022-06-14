@@ -1,4 +1,4 @@
-package gui.administrator;
+package gui.gost;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -7,8 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -19,41 +17,35 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
-import entity.Rezervacije;
+import entity.Gost;
 import entity.Usluge;
 import manage.ManageAll;
 import net.miginfocom.swing.MigLayout;
 
-public class AdministratorIzmenaRezervacije extends JFrame{
+public class GostNovaRezervacijaFrame extends JFrame{
 	private static final long serialVersionUID = 1L;
-	Rezervacije rezervacija;
+	Gost gost;
 
 	ManageAll manageAll = ManageAll.getInstance();
 	
 	SimpleDateFormat datum_formatter = new SimpleDateFormat("yyyy-MM-dd");
 	
 	JButton btnKreiraj = new JButton("Sačuvaj");
-	JTextField brojSobe = new JTextField(40);
-	String[] opcije_status = {"NA_CEKANJU", "POTVRDJENA", "ODBIJENA", "OTKAZANA"};
-	JComboBox<String> status = new JComboBox<>(opcije_status);
 	String[] opcije_usluge = manageAll.getUslugeManager().getNames();
 	JList<String> usluge = new JList<>(opcije_usluge);
 	String[] opcije_tip = manageAll.getTipSobeManager().getNames();
 	JComboBox<String> tipSobe = new JComboBox<>(opcije_tip);
-	String[] opcije_korisnik = manageAll.getGostManager().getNames();
-	JComboBox<String> korisnik = new JComboBox<>(opcije_korisnik);
 	JFormattedTextField datumOd = new JFormattedTextField(datum_formatter);
 	JFormattedTextField datumDo = new JFormattedTextField(datum_formatter);
 	
 	private String datumRegex = "\\d{4}-\\d{2}-\\d{2}";
 	
-	public AdministratorIzmenaRezervacije (Rezervacije rezervacija) {
-		this.rezervacija = rezervacija;
+	public GostNovaRezervacijaFrame (Gost gost) {
+		this.gost = gost;
 		usluge.setSelectionMode(
                 ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		
@@ -71,36 +63,18 @@ public class AdministratorIzmenaRezervacije extends JFrame{
 		Border margin = new EmptyBorder(30, 10, 10, 10);
 		panel.setBorder(margin);
 		
-		JLabel naslov = new JLabel("Izmena podataka o rezervaciji");
+		JLabel naslov = new JLabel("Dodavanje nove rezervacije");
 		naslov.setFont(naslov.getFont().deriveFont(18f));
 		panel.add(naslov, "center, span 2");
-		
-		int[] oznaceni = new int[rezervacija.getUsluge().size()];
-		
-		for (int i = 0; i < rezervacija.getUsluge().size(); i++) {
-			oznaceni[i] = Arrays.asList(opcije_usluge).indexOf(rezervacija.getUsluge().get(i).getTip());
-		}
-		
-		usluge.setSelectedIndices(oznaceni);
-		
-		status.setSelectedItem(String.valueOf(rezervacija.getStatus()));
-		tipSobe.setSelectedItem(rezervacija.getTipSobe().getTip());
-		korisnik.setSelectedItem(rezervacija.getGost().getKorisnickoIme());
-		datumOd.setText(datum_formatter.format(rezervacija.getOdDatum()));
-		datumDo.setText(datum_formatter.format(rezervacija.getDoDatum()));
 		
 		panel.add(new JLabel("Tip sobe"));
 		panel.add(tipSobe, "right, wrap, grow");
 		panel.add(new JLabel("Usluge (pritisnite cmd za označavanje više usluga)"));
 		panel.add(usluge, "right, wrap, grow");
-		panel.add(new JLabel("Gost"));
-		panel.add(korisnik, "right, wrap, grow");
 		panel.add(new JLabel("Datum od"));
 		panel.add(datumOd, "right, wrap, grow");
 		panel.add(new JLabel("Datum do"));
 		panel.add(datumDo, "right, wrap, grow");
-		panel.add(new JLabel("Status"));
-		panel.add(status, "right, wrap, grow");
 		
 		panel.add(btnKreiraj, "center, span 2");
 		
@@ -113,8 +87,6 @@ public class AdministratorIzmenaRezervacije extends JFrame{
 				public void actionPerformed(ActionEvent e) {
 					boolean proslo = true;
 					//upisi u objekat i sacuvaj u bazu
-					String statusText = (String) status.getSelectedItem();
-					String korisnikText = (String) korisnik.getSelectedItem();
 					int[] uslugeText = usluge.getSelectedIndices();
 					String tipSobeText = (String) tipSobe.getSelectedItem();
 					String datumOdText = datumOd.getText();
@@ -126,16 +98,17 @@ public class AdministratorIzmenaRezervacije extends JFrame{
 						lista_usluga[i] = sve_usluge.get(uslugeText[i]).getId();
 					}
 					
+					
 					if (!datumOdText.matches(datumRegex) || !datumDoText.matches(datumRegex)){
 						JOptionPane.showMessageDialog(null, "Loš unos datuma.", "Greška", JOptionPane.ERROR_MESSAGE);
 					} else
 						try {
-							if (datum_formatter.parse(datumOdText).after(datum_formatter.parse(datumDoText))) {
+							if (datum_formatter.parse(datumOdText).after(datum_formatter.parse(datumDoText)) || datum_formatter.parse(datumOdText).before(new java.util.Date())) {
 								JOptionPane.showMessageDialog(null, "Loš unos datuma.", "Greška", JOptionPane.ERROR_MESSAGE);
 							}
 							else {
 								try {
-									proslo = manageAll.getRezervacijeManager().edit(rezervacija.getId(), manageAll.getTipSobeManager().get_id(tipSobeText), lista_usluga, manageAll.getGostManager().get_id(korisnikText), datum_formatter.parse(datumOdText), datum_formatter.parse(datumDoText), statusText);
+									proslo = manageAll.getRezervacijeManager().add(manageAll.getTipSobeManager().get_id(tipSobeText), lista_usluga, gost.getId(), datum_formatter.parse(datumOdText), datum_formatter.parse(datumDoText), "NA_CEKANJU");
 								} catch (ParseException e1) {
 									// TODO Auto-generated catch block
 									e1.printStackTrace();

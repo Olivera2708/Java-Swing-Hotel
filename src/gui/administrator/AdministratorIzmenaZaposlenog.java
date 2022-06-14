@@ -2,6 +2,7 @@ package gui.administrator;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
@@ -149,20 +150,34 @@ public class AdministratorIzmenaZaposlenog extends JFrame{
 					else if (manageAll.getZaposleniManager().vecPostojiKorisnicko(korisnickoText) && !korisnickoText.equals(zaposleni.getKorisnickoIme())) {
 						JOptionPane.showMessageDialog(null, "Izabrano korisničko ime je zauzeto.", "Greška", JOptionPane.ERROR_MESSAGE);
 					}
-					else if (korisnickoText.length() < 5) {
-						JOptionPane.showMessageDialog(null, "Korisničko ime mora imati bar 5 karaktera.", "Greška", JOptionPane.ERROR_MESSAGE);
-					}
-					else if (lozinkaText.length() < 7) {
-						JOptionPane.showMessageDialog(null, "Lozinka ime mora imati bar 7 karaktera.", "Greška", JOptionPane.ERROR_MESSAGE);
-					}
-					else {
-						try {
-							manageAll.getZaposleniManager().edit(zaposleni.getId(), imeText, prezimeText, polText, datum_formatter.parse(datumText), telefonText, adresaText, korisnickoText, lozinkaText, Integer.parseInt(strucnaText), Integer.parseInt(stazText), pozicijaText);
-							JOptionPane.showMessageDialog(null, "Uspešno", "Informacija", JOptionPane.INFORMATION_MESSAGE);
-							zatvoriProzor();
-						} catch (ParseException e1) {
-							System.out.print("Greska");
+					try {
+						if (datum_formatter.parse(datumText).after(new java.util.Date())) {
+							JOptionPane.showMessageDialog(null, "Loš unos datuma.", "Greška", JOptionPane.ERROR_MESSAGE);
 						}
+						else if (korisnickoText.length() < 5) {
+							JOptionPane.showMessageDialog(null, "Korisničko ime mora imati bar 5 karaktera.", "Greška", JOptionPane.ERROR_MESSAGE);
+						}
+						else if (lozinkaText.length() < 7) {
+							JOptionPane.showMessageDialog(null, "Lozinka ime mora imati bar 7 karaktera.", "Greška", JOptionPane.ERROR_MESSAGE);
+						}
+						else {
+							try {
+								manageAll.getZaposleniManager().edit(zaposleni.getId(), imeText, prezimeText, polText, datum_formatter.parse(datumText), telefonText, adresaText, korisnickoText, lozinkaText, Integer.parseInt(strucnaText), Integer.parseInt(stazText), pozicijaText);
+								JOptionPane.showMessageDialog(null, "Uspešno", "Informacija", JOptionPane.INFORMATION_MESSAGE);
+								zatvoriProzor();
+							} catch (ParseException e1) {
+								System.out.print("Greska");
+							}
+						}
+					} catch (HeadlessException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (NumberFormatException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (ParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
 				}	
 			});

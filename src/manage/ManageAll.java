@@ -18,9 +18,9 @@ public class ManageAll {
 		this.tipSobeManager = new TipSobeManager();
 		this.sobeManager = new SobeManager(tipSobeManager);
 		this.uslugeManager = new UslugeManager();
-		this.rezervacijeManager = new RezervacijeManager(tipSobeManager, uslugeManager, gostManager);
 		this.cenovnikSobaManager = new CenovnikSobaManager(tipSobeManager);
 		this.cenovnikUslugaManager = new CenovnikUslugaManager(uslugeManager);
+		this.rezervacijeManager = new RezervacijeManager(tipSobeManager, uslugeManager, gostManager, cenovnikUslugaManager, cenovnikSobaManager);
 	}
 	
 	//dobijanje instanci
@@ -37,9 +37,9 @@ public class ManageAll {
 		this.tipSobeManager.loadData();
 		this.sobeManager.loadData();
 		this.uslugeManager.loadData();
-		this.rezervacijeManager.loadData();
 		this.cenovnikSobaManager.loadData();
 		this.cenovnikUslugaManager.loadData();
+		this.rezervacijeManager.loadData();
 	}
 
 	public ZaposleniManager getZaposleniManager() {

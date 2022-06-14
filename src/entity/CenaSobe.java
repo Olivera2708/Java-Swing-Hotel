@@ -6,8 +6,9 @@ import java.util.Date;
 public class CenaSobe extends Cena {
 	TipSobe tipSobe;
 	
-	public CenaSobe(TipSobe tipSobe, int cena, Date odDatum, Date doDatum) {
+	public CenaSobe(int id, TipSobe tipSobe, int cena, Date odDatum, Date doDatum) {
 		super();
+		this.id = id;
 		this.tipSobe = tipSobe;
 		this.cena = cena;
 		this.odDatum = odDatum;
@@ -27,6 +28,6 @@ public class CenaSobe extends Cena {
 		String od_datum_string = datum_formatter.format(odDatum);
 		String do_datum_string = datum_formatter.format(doDatum);
 	
-		return tipSobe.getId()+";"+cena+";"+od_datum_string+";"+do_datum_string;
+		return id+";"+tipSobe.getId()+";"+cena+";"+od_datum_string+";"+do_datum_string;
 	}	
 }

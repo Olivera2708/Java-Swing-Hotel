@@ -3,9 +3,17 @@ package entity;
 import java.util.Date;
 
 public abstract class Cena{
+	int id;
 	int cena;
 	Date odDatum;
 	Date doDatum;
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	
 	public int getCena() {
 		return cena;

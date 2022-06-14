@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import entity.CenaUsluge;
 
@@ -29,9 +30,9 @@ public class CenovnikUslugaManager {
 			String linija = null;
 			while((linija = br.readLine()) != null) {
 				String[] vrednosti = linija.split(";");
-				if (Integer.parseInt(vrednosti[0]) < 1000) {
+				if (Integer.parseInt(vrednosti[1]) > 1000) {
 					SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
-					CenaUsluge cenaSobe = new CenaUsluge(uslugeManager.find(Integer.parseInt(vrednosti[0])), Integer.parseInt(vrednosti[1]), datum.parse(vrednosti[2]), datum.parse(vrednosti[3]));
+					CenaUsluge cenaSobe = new CenaUsluge(Integer.parseInt(vrednosti[0]), uslugeManager.find(Integer.parseInt(vrednosti[1])), Integer.parseInt(vrednosti[2]), datum.parse(vrednosti[3]), datum.parse(vrednosti[4]));
 					this.cenovnikUslugaLista.add(cenaSobe);
 				}
 			}
@@ -63,12 +64,38 @@ public class CenovnikUslugaManager {
 		}
 		return true;
 	}
+	
+	public boolean appendData() {
+		PrintWriter pw = null;
+		try {
+			pw = new PrintWriter(new FileWriter("data/cenovnik.csv", true));
+			for (CenaUsluge s : cenovnikUslugaLista) {
+				pw.println(s.toFileString());
+			}
+			pw.close();
+		}
+		catch (IOException e) {
+			return false;
+		}
+		return true;
+	}
+	
+	public int get_cena(int id_usluge, Date datum) {
+		for (CenaUsluge s: cenovnikUslugaLista) {
+			if (s.getUsluge().getId() == id_usluge) {
+				if(datum.after(s.getOdDatum()) && datum.before(s.getDoDatum()) || datum.equals(s.getDoDatum()) || datum.equals(s.getOdDatum())) {
+					return s.getCena();
+				}
+			}
+		}
+		return -1;
+	}
 
 	//pronadji cenu sobe po broju sobe
 	public CenaUsluge find(int id) {
 		for (int i = 0; i < cenovnikUslugaLista.size(); i++) {
 			CenaUsluge s = cenovnikUslugaLista.get(i);
-			if (s.getUsluge() == uslugeManager.find(id)) {
+			if (s.getId() == id) {
 				return s;
 			}
 		}
@@ -76,24 +103,29 @@ public class CenovnikUslugaManager {
 	}
 	
 	//izmeni sobu
-	public void edit(int id, int cena, Date datumOd, Date datumDo) {
+	public void edit(int id, int idi, int cena, Date datumOd, Date datumDo) {
 		CenaUsluge s = this.find(id);
-		s.setUsluge(uslugeManager.find(id));
+		s.setUsluge(uslugeManager.find(idi));
 		s.setCena(cena);
 		s.setOdDatum(datumOd);
 		s.setDoDatum(datumDo);
+		saveData();
 	}
 	
 	//dodaj novu sobu
-	public void add(int id, int cena, Date datumOd, Date datumDo) {
-		this.cenovnikUslugaLista.add(new CenaUsluge(uslugeManager.find(id), cena, datumOd, datumDo));
+	public void add(int idi, int cena, Date datumOd, Date datumDo) {
+		Random random = new Random();
+		int id = random.nextInt(8998) + 1001;
+		while (find(id) != null) {
+			id = random.nextInt(8998) + 1001;
+		}
+		this.cenovnikUslugaLista.add(new CenaUsluge(id, uslugeManager.find(idi), cena, datumOd, datumDo));
 		this.saveData();
 	}
 	
 	//obrisi sobu
 	public void remove(int id) {
-		CenaUsluge s = this.find(id);
-		this.cenovnikUslugaLista.remove(s);
+		this.cenovnikUslugaLista.remove(id);
 		this.saveData();
 	}
 	

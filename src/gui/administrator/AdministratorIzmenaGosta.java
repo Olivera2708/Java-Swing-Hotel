@@ -2,6 +2,7 @@ package gui.administrator;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
@@ -126,20 +127,31 @@ public class AdministratorIzmenaGosta extends JFrame{
 					else if (!datumText.matches(datumRegex)){
 						JOptionPane.showMessageDialog(null, "Loš unos datuma.", "Greška", JOptionPane.ERROR_MESSAGE);
 					}
-					else if (korisnickoText.length() < 7){
-						JOptionPane.showMessageDialog(null, "Broj pasoša mora da ima bar 7 karaktera.", "Greška", JOptionPane.ERROR_MESSAGE);
-					}
-					else if (!telefonText.matches(telefonRegex)) {
-						JOptionPane.showMessageDialog(null, "Loš unos broja telefona.", "Greška", JOptionPane.ERROR_MESSAGE);
-					}
-					else {
-						try {
-							manageAll.getGostManager().edit(gost.getId(), imeText, prezimeText, polText, datum_formatter.parse(datumText), telefonText, adresaText, korisnickoText, lozinkaText);
-							JOptionPane.showMessageDialog(null, "Uspešno", "Informacija", JOptionPane.INFORMATION_MESSAGE);
-							zatvoriProzor();
-						} catch (ParseException e1) {
-							System.out.print("Greska");
+					try {
+						if (datum_formatter.parse(datumText).after(new java.util.Date())) {
+							JOptionPane.showMessageDialog(null, "Loš unos datuma.", "Greška", JOptionPane.ERROR_MESSAGE);
 						}
+						else if (korisnickoText.length() < 7){
+							JOptionPane.showMessageDialog(null, "Broj pasoša mora da ima bar 7 karaktera.", "Greška", JOptionPane.ERROR_MESSAGE);
+						}
+						else if (!telefonText.matches(telefonRegex)) {
+							JOptionPane.showMessageDialog(null, "Loš unos broja telefona.", "Greška", JOptionPane.ERROR_MESSAGE);
+						}
+						else {
+							try {
+								manageAll.getGostManager().edit(gost.getId(), imeText, prezimeText, polText, datum_formatter.parse(datumText), telefonText, adresaText, korisnickoText, lozinkaText);
+								JOptionPane.showMessageDialog(null, "Uspešno", "Informacija", JOptionPane.INFORMATION_MESSAGE);
+								zatvoriProzor();
+							} catch (ParseException e1) {
+								System.out.print("Greska");
+							}
+						}
+					} catch (HeadlessException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (ParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
 				}	
 			});

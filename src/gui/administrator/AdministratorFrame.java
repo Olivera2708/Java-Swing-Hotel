@@ -152,6 +152,14 @@ public class AdministratorFrame extends JFrame {
 			}
 		});
 		
+		btnCenovnik.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AdministratorCenovnikFrame cenovnik = new AdministratorCenovnikFrame(false);
+				cenovnik.setVisible(true);
+			}
+		});
+		
 		btnOdjava.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

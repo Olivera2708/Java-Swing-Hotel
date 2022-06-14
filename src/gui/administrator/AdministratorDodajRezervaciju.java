@@ -18,7 +18,6 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -26,7 +25,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import entity.Usluge;
 import gui.models.RezervacijeModel;
-import gui.models.TipSobaModel;
 import manage.ManageAll;
 import net.miginfocom.swing.MigLayout;
 
@@ -39,7 +37,6 @@ public class AdministratorDodajRezervaciju extends JFrame{
 	SimpleDateFormat datum_formatter = new SimpleDateFormat("yyyy-MM-dd");
 	
 	JButton btnKreiraj = new JButton("Sačuvaj");
-	JTextField brojSobe = new JTextField(40);
 	String[] opcije_status = {"NA_CEKANJU", "POTVRDJENA", "ODBIJENA", "OTKAZANA"};
 	JComboBox<String> status = new JComboBox<>(opcije_status);
 	String[] opcije_usluge = manageAll.getUslugeManager().getNames();
@@ -98,6 +95,7 @@ public class AdministratorDodajRezervaciju extends JFrame{
 			btnKreiraj.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					boolean proslo = true;
 					//upisi u objekat i sacuvaj u bazu
 					String statusText = (String) status.getSelectedItem();
 					String korisnikText = (String) korisnik.getSelectedItem();
@@ -122,14 +120,16 @@ public class AdministratorDodajRezervaciju extends JFrame{
 							}
 							else {
 								try {
-									manageAll.getRezervacijeManager().add(manageAll.getTipSobeManager().get_id(tipSobeText), lista_usluga, manageAll.getGostManager().get_id(korisnikText), datum_formatter.parse(datumOdText), datum_formatter.parse(datumDoText), statusText);
+									proslo = manageAll.getRezervacijeManager().add(manageAll.getTipSobeManager().get_id(tipSobeText), lista_usluga, manageAll.getGostManager().get_id(korisnikText), datum_formatter.parse(datumOdText), datum_formatter.parse(datumDoText), statusText);
 								} catch (ParseException e1) {
 									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
-								JOptionPane.showMessageDialog(null, "Uspešno", "Informacija", JOptionPane.INFORMATION_MESSAGE);
-								zatvoriProzor();
-								osveziTabelu();
+								if (proslo) {
+									JOptionPane.showMessageDialog(null, "Uspešno", "Informacija", JOptionPane.INFORMATION_MESSAGE);
+									zatvoriProzor();
+									osveziTabelu();
+								}
 							}
 						} catch (HeadlessException | ParseException e1) {
 							// TODO Auto-generated catch block
