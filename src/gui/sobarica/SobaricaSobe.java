@@ -1,4 +1,4 @@
-package gui.administrator;
+package gui.sobarica;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -18,22 +18,23 @@ import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import entity.Rezervacije;
 import entity.Sobe;
-import gui.models.SobeModel;
+import entity.Zaposleni;
+import gui.models.SobaricaModel;
 import manage.ManageAll;
 
-public class AdministratorSobeFrame extends JFrame{
+public class SobaricaSobe extends JFrame{
 	private static final long serialVersionUID = 1L;
+	Zaposleni spremacica;
 
 	ManageAll manageAll = ManageAll.getInstance();
-	JButton btnAdd;
-	JButton btnDelete;
-	JButton btnEdit;
+	JButton btnSpremljena;
 	JTable tabela;
 
-	AdministratorSobeFrame () {
-		this.setTitle("Sobe");
+	SobaricaSobe (Zaposleni spremacica) {
+		this.spremacica = spremacica;
+		
+		this.setTitle("Sobe za sredjivanje");
 		this.setPreferredSize(new Dimension(800, 600));
 		this.setResizable(false);
 		prikaziDugmice();
@@ -48,16 +49,11 @@ public class AdministratorSobeFrame extends JFrame{
 		JPanel panel = new JPanel();
 		Dimension d = new Dimension(150, 20);
 				
-		btnAdd = new JButton("Dodaj");
-		btnAdd.setPreferredSize(d);
-		btnEdit = new JButton("Izmeni");
-		btnEdit.setPreferredSize(d);
-		btnDelete = new JButton("Obriši");
-		btnDelete.setPreferredSize(d);
+		btnSpremljena = new JButton("Spremljena");
+		btnSpremljena.setPreferredSize(d);
 		
-		panel.add(btnAdd);
-		panel.add(btnEdit);
-		panel.add(btnDelete);
+		panel.add(btnSpremljena);
+		panel.add(btnSpremljena);
 		toolBar.add(panel);
 		
 		add(toolBar, BorderLayout.NORTH);
@@ -65,7 +61,7 @@ public class AdministratorSobeFrame extends JFrame{
 	
 	private void prikaziTabelu() {
 		tabela = new JTable();
-		tabela.setModel(new SobeModel(manageAll.getSobeManager().getAll()));
+		tabela.setModel(new SobaricaModel(manageAll.getSobeManager().getPosao(spremacica)));//Menjaj
 		tabela.setShowGrid(true);
 		tabela.setGridColor(Color.GRAY);
 		tabela.setFont(tabela.getFont().deriveFont(14f));
@@ -85,40 +81,15 @@ public class AdministratorSobeFrame extends JFrame{
 		this.getContentPane().add(panel, BorderLayout.CENTER);
 	}
 	
+	
 	private void allButtons() {
-		btnAdd.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				AdministratorDodajSobu dodajSobu = new AdministratorDodajSobu(tabela);
-				dodajSobu.setVisible(true);
-			}
-			
-		});
 		
-		btnEdit.addActionListener(new ActionListener() {
+		btnSpremljena.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int zaposleni = tabela.getSelectedRow();
 				if (zaposleni == -1) {
-					JOptionPane.showMessageDialog(null, "Morate selektovati sobu iz tabele.", "Greška", JOptionPane.WARNING_MESSAGE);
-				}
-				else {
-					int id = (int) tabela.getValueAt(zaposleni, 0);
-					Sobe izabran = manageAll.getSobeManager().find(id);
-					AdministratorIzmenaSobe izmenaSobe = new AdministratorIzmenaSobe(izabran);
-					izmenaSobe.setVisible(true);
-					osveziTabelu();
-				}
-			}
-		});
-		
-		
-		btnDelete.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int zaposleni = tabela.getSelectedRow();
-				if (zaposleni == -1) {
-					JOptionPane.showMessageDialog(null, "Morate selektovati sobu iz tabele.", "Greška", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Morate selektovati rezervaciju iz tabele.", "Greška", JOptionPane.WARNING_MESSAGE);
 				}
 				else {
 					int id = (int) tabela.getValueAt(zaposleni, 0);
@@ -129,35 +100,20 @@ public class AdministratorSobeFrame extends JFrame{
 	}
 	
 	private void areYouSure(int id) {
-		boolean moze = true;
-		for (Rezervacije r: manageAll.getRezervacijeManager().getAll()) {
-			int brojSobe = 0;
-			try {
-				brojSobe = r.getSoba().getBrojSobe();
-			}
-			catch (NullPointerException e) {
-				
-			}
-			if (brojSobe == id) {
-				JOptionPane.showMessageDialog(null, "Ova soba je u rezervisanim.", "Greška", JOptionPane.WARNING_MESSAGE);
-				moze = false;
-				break;
-			}
-		}
-		if (moze) {
-			String[] option = new String[2];
-			option[0] = "Da";
-			option[1] = "Ne";
-			int vrednost = JOptionPane.showOptionDialog(null, "Da li ste sigurni da želite da obrišete sobu?", "Izlazak", 0, JOptionPane.INFORMATION_MESSAGE, null, option, null);
-			if (vrednost == JOptionPane.YES_OPTION) {
-				manageAll.getSobeManager().remove(id);
-				osveziTabelu();
-			}	
-		}
+		String[] option = new String[2];
+		option[0] = "Da";
+		option[1] = "Ne";
+		int vrednost = JOptionPane.showOptionDialog(null, "Da li potvrđujete da ste spremili ovu sobu?", "Izlazak", 0, JOptionPane.INFORMATION_MESSAGE, null, option, null);
+		if (vrednost == JOptionPane.YES_OPTION) {
+			//update sobu u slobodna
+			Sobe soba = manageAll.getSobeManager().find(id);
+			manageAll.getSobeManager().edit(id, id, soba.getTipSobe().getId(), "SLOBODNA", 0);
+			osveziTabelu();
+		}	
 	}
 	
 	private void osveziTabelu() {
-		tabela.setModel(new SobeModel(manageAll.getSobeManager().getAll()));
+		tabela.setModel(new SobaricaModel(manageAll.getSobeManager().getPosao(spremacica)));
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 		tabela.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);

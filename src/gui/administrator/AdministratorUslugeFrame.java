@@ -132,11 +132,15 @@ public class AdministratorUslugeFrame extends JFrame{
 		//Ne moze da se obrise ako se koristi
 		boolean moze = true;
 		for (Rezervacije r: manageAll.getRezervacijeManager().getAll()) {
-			if (r.getTipSobe().getId() == id) {
-				JOptionPane.showMessageDialog(null, "Ova usluga je u upotrebi.", "Greška", JOptionPane.WARNING_MESSAGE);
-				moze = false;
-				break;
+			for (Usluge u: r.getUsluge()) {
+				if (u.getId() == id) {
+					JOptionPane.showMessageDialog(null, "Ova usluga je u upotrebi.", "Greška", JOptionPane.WARNING_MESSAGE);
+					moze = false;
+					break;
+				}
 			}
+			if (!moze)
+				break;
 		}
 		if (moze) {
 			String[] option = new String[2];

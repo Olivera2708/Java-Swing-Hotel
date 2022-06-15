@@ -31,8 +31,12 @@ public class AdministratorZaposleniFrame extends JFrame{
 	JButton btnEdit;
 	JButton btnShow;
 	JTable tabela;
+	
+	Zaposleni admin;
 
-	AdministratorZaposleniFrame () {
+	AdministratorZaposleniFrame (Zaposleni admin) {
+		this.admin = admin;
+		
 		this.setTitle("Zaposleni");
 		this.setPreferredSize(new Dimension(800, 600));
 		this.setResizable(false);
@@ -139,9 +143,20 @@ public class AdministratorZaposleniFrame extends JFrame{
 				if (zaposleni == -1) {
 					JOptionPane.showMessageDialog(null, "Morate selektovati zaposlenog iz tabele.", "Greška", JOptionPane.WARNING_MESSAGE);
 				}
+				else if (manageAll.getZaposleniManager().brojSpremacica() == 1) {
+						JOptionPane.showMessageDialog(null, "Mora postojati bar jedna sobarica.", "Greška", JOptionPane.WARNING_MESSAGE);
+					}
 				else {
 					int id = (int) tabela.getValueAt(zaposleni, 0);
-					areYouSure(id);
+					if (admin.getId() == id) {
+						JOptionPane.showMessageDialog(null, "Ne možete obrisati sebe.", "Greška", JOptionPane.WARNING_MESSAGE);
+					}
+					else if (manageAll.getSobeManager().getPosao(manageAll.getZaposleniManager().find(id)).isEmpty()) {
+						areYouSure(id);
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "Sobarica ima posao koji mora da obavi.", "Greška", JOptionPane.WARNING_MESSAGE);
+					}
 				}
 			}
 		});

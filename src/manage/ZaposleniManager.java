@@ -54,6 +54,16 @@ public class ZaposleniManager {
 		return this.zaposleniLista;
 	}
 	
+	public int brojSpremacica() {
+		int brojac = 0;
+		for (Zaposleni z: zaposleniLista) {
+			if (z.getPozicija().equals("Sobarica")) {
+				brojac++;
+			}
+		}
+		return brojac;
+	}
+	
 	//za ucitavanje u tabelu
 	public String[][] ucitajPodatke(){
 		String[][] podaci = new String[this.zaposleniLista.size()][];

@@ -17,6 +17,7 @@ import entity.Zaposleni;
 import gui.administrator.AdministratorFrame;
 import gui.gost.GostFrame;
 import gui.recepcioner.RecepcionerFrame;
+import gui.sobarica.SobaricaFrame;
 import manage.ManageAll;
 import net.miginfocom.swing.MigLayout;
 
@@ -121,6 +122,9 @@ public class MainFrame extends JFrame{
 					AdministratorFrame administratorFrame = new AdministratorFrame(z);
 					administratorFrame.setVisible(true);
 					break;
+				case "Sobarica":
+					SobaricaFrame sobaricaFrame = new SobaricaFrame(z);
+					sobaricaFrame.setVisible(true);
 				}	
 			}
 		}

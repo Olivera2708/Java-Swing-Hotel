@@ -69,7 +69,7 @@ public class SobeManager {
 		}
 		//odredi koja ima najmanje
 		Zaposleni najmanje = null;
-		//NE RADI MI DA ODREDIM MINIMALNU
+		
 		for (Zaposleni z: zaposleniManager.getAll()) {
 			if (z.getPozicija().equals("Sobarica")) {
 				if (!mapa.containsKey(z)){
@@ -98,6 +98,16 @@ public class SobeManager {
 			}
 		}
 		return slobodne;
+	}
+	
+	public List<Sobe> getPosao(Zaposleni sobarica){
+		List<Sobe> sobe = new ArrayList<Sobe>();
+		for (Sobe s: sobeLista) {
+			if (s.getSpremacica() == sobarica) {
+				sobe.add(s);
+			}
+		}
+		return sobe;
 	}
 	
 	//cuvanje podataka iz objekta nazad u csv

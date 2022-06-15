@@ -107,7 +107,7 @@ public class AdministratorFrame extends JFrame {
 		btnZaposleni.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				AdministratorZaposleniFrame zaposleni = new AdministratorZaposleniFrame();
+				AdministratorZaposleniFrame zaposleni = new AdministratorZaposleniFrame(administrator);
 				zaposleni.setVisible(true);
 			}
 		});
