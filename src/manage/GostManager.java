@@ -117,6 +117,9 @@ public class GostManager {
 		//random id
 		Random random = new Random();
 		int id = random.nextInt(8998) + 1001;
+		while (find(id) != null) {
+			id = random.nextInt(8998) + 1001;
+		}
 		this.gostLista.add(new Gost(id, ime, prezime, pol, datum, telefon, adresa, korisnickoIme, lozinka));
 		this.saveData();
 	}

@@ -21,7 +21,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import entity.Rezervacije;
 import entity.Sobe;
 import entity.TipSobe;
-import gui.models.GostModel;
 import gui.models.TipSobaModel;
 import manage.ManageAll;
 

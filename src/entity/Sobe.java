@@ -6,11 +6,13 @@ public class Sobe {
 	private int brojSobe;
 	private TipSobe tipSobe;
 	private EnumStatusSobe status;
+	private Zaposleni spremacica;
 	
-	public Sobe(int id, TipSobe tipSobe, EnumStatusSobe status) {
+	public Sobe(int id, TipSobe tipSobe, EnumStatusSobe status, Zaposleni spremacica) {
 		this.brojSobe = id;
 		this.tipSobe = tipSobe;
 		this.status = status;
+		this.spremacica = spremacica;
 	}
 
 	public int getBrojSobe() {
@@ -38,7 +40,22 @@ public class Sobe {
 	}
 	
 	public String toFileString() {
-		return brojSobe+";"+tipSobe.getId()+";"+status;
+		int id_spremacice = 0;
+		try {
+			id_spremacice = spremacica.getId();
+		}
+		catch (NullPointerException e) {
+			
+		}
+		return brojSobe+";"+tipSobe.getId()+";"+status+";"+id_spremacice;
+	}
+
+	public Zaposleni getSpremacica() {
+		return spremacica;
+	}
+
+	public void setSpremacica(Zaposleni spremacica) {
+		this.spremacica = spremacica;
 	}
 	
 }

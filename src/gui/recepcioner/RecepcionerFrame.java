@@ -1,4 +1,4 @@
-package gui.gost;
+package gui.recepcioner;
 
 import java.awt.Dimension;
 import java.awt.Image;
@@ -13,36 +13,37 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import entity.Gost;
+import entity.Zaposleni;
 import manage.ManageAll;
 import net.miginfocom.swing.MigLayout;
 
-public class GostFrame extends JFrame {
+public class RecepcionerFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
-	private Gost gost;
+	private Zaposleni recepcioner;
 	
 	ManageAll manageAll = ManageAll.getInstance();
 	
 	JButton btnOdjava;
-	JButton btnMojeRezervacije;
-	JButton btnNovaRezervacija;
+	JButton btnPrikazRezervacija;
+	JButton btnCheckIn;
+	JButton btnCheckOut;
+	JButton btnDodajGosta;
 	
 	
-	
-	public GostFrame (Gost gost) {
-		this.gost = gost;
+	public RecepcionerFrame (Zaposleni recepcioner) {
+		this.recepcioner = recepcioner;
 		
-		this.setTitle("Gost " + gost.getIme() + " " + gost.getPrezime());
+		this.setTitle("Recepcioner " + recepcioner.getIme() + " " + recepcioner.getPrezime());
 		this.setPreferredSize(new Dimension(1000, 700));
 		this.setResizable(false);
-		GostGUI();
+		RecepcionerGUI();
 		this.pack();
 		this.setLocationRelativeTo(null);
 		Dugmici();
 	}
 	
-	private void GostGUI() {
-		getContentPane().setLayout(new MigLayout("", "[425][150][425]", "80[150]20[][]50[]30[]30[]30"));
+	private void RecepcionerGUI() {
+		getContentPane().setLayout(new MigLayout("", "[425][150][425]", "80[150]20[][]50[]10[]10[]10[]10[]10"));
 		
 		Dimension d = new Dimension(200,36);
 		
@@ -50,25 +51,33 @@ public class GostFrame extends JFrame {
 		JLabel slika = new JLabel(imageIcon, JLabel.CENTER);
 		getContentPane().add(slika, "cell 1 0");
 		
-		JLabel lblNewLabel = new JLabel(gost.getIme() + " " + gost.getPrezime(), JLabel.CENTER);
+		JLabel lblNewLabel = new JLabel(recepcioner.getIme() + " " + recepcioner.getPrezime(), JLabel.CENTER);
 		lblNewLabel.setFont(lblNewLabel.getFont().deriveFont(20f));
 		getContentPane().add(lblNewLabel, "cell 1 1,alignx center");
 		
-		JLabel lblNewLabel_1 = new JLabel("Gost", JLabel.CENTER);
+		JLabel lblNewLabel_1 = new JLabel("Recepcioner", JLabel.CENTER);
 		lblNewLabel_1.setFont(lblNewLabel_1.getFont().deriveFont(16f));
 		getContentPane().add(lblNewLabel_1, "cell 1 2,alignx center");
 		
-		btnNovaRezervacija = new JButton("Nova rezervacija");
-		btnNovaRezervacija.setPreferredSize(d);
-		getContentPane().add(btnNovaRezervacija, "cell 1 3,alignx center");
+		btnDodajGosta = new JButton("Novi gost");
+		btnDodajGosta.setPreferredSize(d);
+		getContentPane().add(btnDodajGosta, "cell 1 3,alignx center");
 		
-		btnMojeRezervacije = new JButton("Moje rezervacije");
-		btnMojeRezervacije.setPreferredSize(d);
-		getContentPane().add(btnMojeRezervacije, "cell 1 4,alignx center");
+		btnPrikazRezervacija = new JButton("Potvrda rezervacija");
+		btnPrikazRezervacija.setPreferredSize(d);
+		getContentPane().add(btnPrikazRezervacija, "cell 1 4,alignx center");
+		
+		btnCheckIn = new JButton("Check in");
+		btnCheckIn.setPreferredSize(d);
+		getContentPane().add(btnCheckIn, "cell 1 5,alignx center");
+		
+		btnCheckOut = new JButton("Check out");
+		btnCheckOut.setPreferredSize(d);
+		getContentPane().add(btnCheckOut, "cell 1 6,alignx center");
 		
 		btnOdjava = new JButton("Odjava");
 		btnOdjava.setPreferredSize(d);
-		getContentPane().add(btnOdjava, "cell 1 5,alignx center");
+		getContentPane().add(btnOdjava, "cell 1 7,alignx center");
 	}
 	
 	private void Dugmici() {
@@ -79,18 +88,34 @@ public class GostFrame extends JFrame {
 			}	
 		});
 		
-		btnMojeRezervacije.addActionListener(new ActionListener() {
+		btnPrikazRezervacija.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				GostMojeRezervacijeFrame mojeRezervacije = new GostMojeRezervacijeFrame(gost);
-				mojeRezervacije.setVisible(true);
+				RecepcionerPotvrdaRezervacija novaRezervacija = new RecepcionerPotvrdaRezervacija();
+				novaRezervacija.setVisible(true);
 			}
 		});
 		
-		btnNovaRezervacija.addActionListener(new ActionListener() {
+		btnDodajGosta.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				GostNovaRezervacijaFrame novaRezervacija = new GostNovaRezervacijaFrame(gost);
+				RecepcionerDodajGosta novaRezervacija = new RecepcionerDodajGosta();
+				novaRezervacija.setVisible(true);
+			}
+		});
+		
+		btnCheckIn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				RecepcionerCheckIn novaRezervacija = new RecepcionerCheckIn();
+				novaRezervacija.setVisible(true);
+			}
+		});
+		
+		btnCheckOut.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				RecepcionerCheckOut novaRezervacija = new RecepcionerCheckOut();
 				novaRezervacija.setVisible(true);
 			}
 		});

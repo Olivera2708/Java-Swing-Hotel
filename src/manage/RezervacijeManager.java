@@ -16,6 +16,8 @@ import java.util.Random;
 import javax.swing.JOptionPane;
 
 import enums.EnumStatusRezervacije;
+import enums.EnumStatusSobe;
+import entity.Gost;
 import entity.Rezervacije;
 import entity.Sobe;
 import entity.TipSobe;
@@ -48,14 +50,23 @@ public class RezervacijeManager {
 			while((linija = br.readLine()) != null) {
 				String[] vrednosti = linija.split(";");
 				SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
+				
 				List<Usluge> lista_usluga = new ArrayList<Usluge>();
-				String[] usluge = vrednosti[2].split(",");
-				if (usluge.length != 0) {
+				String[] usluge;
+				if (!vrednosti[2].equals("")) {
+					usluge = vrednosti[2].split(",");
 					for (String s: usluge) {
 						lista_usluga.add(uslugeManager.find(Integer.parseInt(s)));
 					}
 				}
-				Rezervacije rezervacije = new Rezervacije(Integer.parseInt(vrednosti[0]), tipSobeManager.find(Integer.parseInt(vrednosti[1])), lista_usluga, gostManager.find_name(vrednosti[3]), datum.parse(vrednosti[4]), datum.parse(vrednosti[5]), Integer.parseInt(vrednosti[6]), EnumStatusRezervacije.valueOf(vrednosti[7]));
+				Sobe soba = null;
+				try {
+					int brojSobe = Integer.parseInt(vrednosti[8]);
+					soba = sobeManager.find(brojSobe);
+				}
+				catch (ArrayIndexOutOfBoundsException e) {
+				}
+				Rezervacije rezervacije = new Rezervacije(Integer.parseInt(vrednosti[0]), tipSobeManager.find(Integer.parseInt(vrednosti[1])), lista_usluga, gostManager.find_name(vrednosti[3]), datum.parse(vrednosti[4]), datum.parse(vrednosti[5]), Integer.parseInt(vrednosti[6]), EnumStatusRezervacije.valueOf(vrednosti[7]), soba);
 				this.rezervacijeLista.add(rezervacije);
 			}
 			br.close();
@@ -63,12 +74,77 @@ public class RezervacijeManager {
 		catch (IOException | NumberFormatException | ParseException e1){
 			return false;
 		}
+		update();
 		return true;
+	}
+	
+	public void update() {
+		for (Rezervacije ir: rezervacijeLista) {
+			if (String.valueOf(ir.getStatus()).equals("NA_CEKANJU") && (ir.getOdDatum().before(new java.util.Date()) || ir.getOdDatum().equals(new java.util.Date()))) {
+				int[] lista_usluga = new int[ir.getUsluge().size()];
+				for (int i =0; i < ir.getUsluge().size(); i++) {
+					lista_usluga[i] = ir.getUsluge().get(i).getId();
+				}
+				
+				Sobe soba = null;
+				try {
+					soba = ir.getSoba();
+				}
+				catch (ArrayIndexOutOfBoundsException e) {
+				}
+				this.edit(ir.getId(), ir.getTipSobe().getId(), lista_usluga, ir.getGost().getId(), ir.getOdDatum(), ir.getDoDatum(), "ODBIJENA", soba);
+			}
+		}
+		saveData();
 	}
 	
 	//lista svih soba
 	public List<Rezervacije> getAll(){
 		return rezervacijeLista;
+	}
+	
+	//lista rezervacija korisnika
+	public List<Rezervacije> getRezervacije(Gost gost){
+		List<Rezervacije> rezervacije = new ArrayList<>();
+		for (Rezervacije r: rezervacijeLista) {
+			if (r.getGost() == gost) {
+			rezervacije.add(r);
+			}
+		}
+		return rezervacije;
+	}
+	
+	public List<Rezervacije> getRezervacijeNaCekanju(){
+		List<Rezervacije> rezervacije = new ArrayList<>();
+		for (Rezervacije r: rezervacijeLista) {
+			if (String.valueOf(r.getStatus()).equals("NA_CEKANJU")) {
+			rezervacije.add(r);
+			}
+		}
+		return rezervacije;
+	}
+	
+	public List<Rezervacije> getRezervacijePotvrdjene(){
+		List<Rezervacije> rezervacije = new ArrayList<>();
+		for (Rezervacije r: rezervacijeLista) {
+			SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
+			if (String.valueOf(r.getStatus()).equals("POTVRDJENA") && r.getSoba() == null && datum.format(r.getOdDatum()).equals(datum.format(new Date()))) {
+				rezervacije.add(r);
+			}
+		}
+		return rezervacije;
+	}
+	
+	public List<Rezervacije> getRezervacijePotvrdjeneCheckOut(){
+		List<Rezervacije> rezervacije = new ArrayList<>();
+		for (Rezervacije r: rezervacijeLista) {
+			SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
+			if (String.valueOf(r.getStatus()).equals("POTVRDJENA") && r.getSoba() != null && datum.format(r.getDoDatum()).equals(datum.format(new Date()))) {
+				if (r.getSoba().getStatus().equals(EnumStatusSobe.ZAUZETO))
+					rezervacije.add(r);
+			}
+		}
+		return rezervacije;
 	}
 	
 	//cuvanje podataka iz objekta nazad u csv
@@ -166,7 +242,7 @@ public class RezervacijeManager {
 		
 		int zauzete = 0;
 		for (Rezervacije s: rezervacijeLista) {
-			if (s.getTipSobe().getId() == id_tipaSobe) {
+			if (s.getTipSobe().getId() == id_tipaSobe && (String.valueOf(s.getStatus()).equals("NA_CEKANJU") || String.valueOf(s.getStatus()).equals("POTVRDJENA"))) {
 				if ((s.getOdDatum().before(datumDo) && s.getDoDatum().after(datumOd))
 						|| (s.getDoDatum().before(datumDo) && s.getDoDatum().after(datumOd))
 						|| s.getDoDatum().equals(datumOd) || s.getOdDatum().equals(datumDo)) {
@@ -210,7 +286,7 @@ public class RezervacijeManager {
 		}
 	
 	//dodaj novu rezervaciju
-	public boolean edit(int id, int tipSobe, int[] usluge, int gost, Date odDatum, Date doDatum, String status) {
+	public boolean edit(int id, int tipSobe, int[] usluge, int gost, Date odDatum, Date doDatum, String status, Sobe soba) {
 		Rezervacije s = this.find(id);
 		//Izracunaj cenu na osnovu datuma
 		int cena = cena(tipSobe, usluge, odDatum, doDatum, true);
@@ -229,6 +305,7 @@ public class RezervacijeManager {
 		s.setOdDatum(odDatum);
 		s.setDoDatum(doDatum);
 		s.setStatus(EnumStatusRezervacije.valueOf(status));
+		s.setSoba(soba);
 		this.saveData();
 		return true;
 	}
@@ -237,6 +314,9 @@ public class RezervacijeManager {
 	public boolean add(int tipSobe, int[] usluge, int gost, Date odDatum, Date doDatum, String status) {
 		Random random = new Random();
 		int id = random.nextInt(8998) + 1001;
+		while (find(id) != null) {
+			id = random.nextInt(8998) + 1001;
+		}
 		List<Usluge> lista_usluga = new ArrayList<Usluge>();
 		for (int s: usluge) {
 			lista_usluga.add(uslugeManager.find(s));
@@ -245,7 +325,7 @@ public class RezervacijeManager {
 		if (cena == -1) {
 			return false;
 		}
-		this.rezervacijeLista.add(new Rezervacije(id, tipSobeManager.find(tipSobe), lista_usluga, gostManager.find(gost), odDatum, doDatum, cena, EnumStatusRezervacije.valueOf(status)));
+		this.rezervacijeLista.add(new Rezervacije(id, tipSobeManager.find(tipSobe), lista_usluga, gostManager.find(gost), odDatum, doDatum, cena, EnumStatusRezervacije.valueOf(status), null));
 		this.saveData();
 		return true;
 	}

@@ -35,7 +35,7 @@ public class GostNovaRezervacijaFrame extends JFrame{
 	
 	SimpleDateFormat datum_formatter = new SimpleDateFormat("yyyy-MM-dd");
 	
-	JButton btnKreiraj = new JButton("Sačuvaj");
+	JButton btnKreiraj = new JButton("Rezerviši");
 	JButton btnPretraga = new JButton("Pretraži");
 	JButton btnIzracunaj = new JButton("Izračunaj");
 	JLabel cena = new JLabel();

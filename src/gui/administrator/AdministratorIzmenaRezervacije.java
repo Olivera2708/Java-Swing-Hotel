@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -135,7 +134,7 @@ public class AdministratorIzmenaRezervacije extends JFrame{
 							}
 							else {
 								try {
-									proslo = manageAll.getRezervacijeManager().edit(rezervacija.getId(), manageAll.getTipSobeManager().get_id(tipSobeText), lista_usluga, manageAll.getGostManager().get_id(korisnikText), datum_formatter.parse(datumOdText), datum_formatter.parse(datumDoText), statusText);
+									proslo = manageAll.getRezervacijeManager().edit(rezervacija.getId(), manageAll.getTipSobeManager().get_id(tipSobeText), lista_usluga, manageAll.getGostManager().get_id(korisnikText), datum_formatter.parse(datumOdText), datum_formatter.parse(datumDoText), statusText, null);
 								} catch (ParseException e1) {
 									// TODO Auto-generated catch block
 									e1.printStackTrace();

@@ -17,7 +17,7 @@ public class Rezervacije {
 	private int cena;
 	private EnumStatusRezervacije status;
 	
-	public Rezervacije(int id, TipSobe tipSobe, List<Usluge> usluge, Gost gost, Date odDatum, Date doDatum, int cena, EnumStatusRezervacije status) {
+	public Rezervacije(int id, TipSobe tipSobe, List<Usluge> usluge, Gost gost, Date odDatum, Date doDatum, int cena, EnumStatusRezervacije status, Sobe soba) {
 		this.id = id;
 		this.tipSobe = tipSobe;
 		this.usluge = usluge;
@@ -26,7 +26,7 @@ public class Rezervacije {
 		this.doDatum = doDatum;
 		this.cena = cena;
 		this.status = status;
-		this.soba = null;
+		this.soba = soba;
 	}
 	
 	public Sobe getSoba() {
@@ -129,7 +129,11 @@ public class Rezervacije {
 			}
 			us = us.substring(0, us.length()-1);
 		}
-	
-		return id+";"+tipSobe.getId()+";"+us+";"+gost.getKorisnickoIme()+";"+od_datum_string+";"+do_datum_string+";"+cena+";"+status;
+		
+		String brojSobe = "";
+		if (soba != null) {
+			brojSobe = String.valueOf(soba.getBrojSobe());
+		}
+		return id+";"+tipSobe.getId()+";"+us+";"+gost.getKorisnickoIme()+";"+od_datum_string+";"+do_datum_string+";"+cena+";"+status+";"+brojSobe;
 	}
 }

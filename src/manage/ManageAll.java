@@ -16,7 +16,7 @@ public class ManageAll {
 		this.zaposleniManager = new ZaposleniManager();
 		this.gostManager = new GostManager();
 		this.tipSobeManager = new TipSobeManager();
-		this.sobeManager = new SobeManager(tipSobeManager);
+		this.sobeManager = new SobeManager(tipSobeManager, zaposleniManager);
 		this.uslugeManager = new UslugeManager();
 		this.cenovnikSobaManager = new CenovnikSobaManager(tipSobeManager);
 		this.cenovnikUslugaManager = new CenovnikUslugaManager(uslugeManager);

@@ -1,4 +1,4 @@
-package gui;
+package gui.recepcioner;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -11,22 +11,16 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
-import entity.Gost;
-import entity.Zaposleni;
 import manage.ManageAll;
 import net.miginfocom.swing.MigLayout;
 
-public class RecepcionerFrame extends JFrame {
-	private Zaposleni recepcioner;
+public class RecepcionerDodajGosta extends JFrame {
 	
 	ManageAll manageAll = ManageAll.getInstance();
 	
@@ -48,39 +42,18 @@ public class RecepcionerFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	
-	public RecepcionerFrame (Zaposleni recepcioner) {
-		this.recepcioner = recepcioner;
-		
-		this.setTitle("Recepcioner " + recepcioner.getIme() + " " + recepcioner.getPrezime());
-		this.setPreferredSize(new Dimension(1000, 700));
-		RecepcionerGUI();
+	public RecepcionerDodajGosta () {
+		this.setTitle("Recepcioner");
+		this.setPreferredSize(new Dimension(700, 500));
+		NoviGostGUI();
 		this.pack();
 		this.setLocationRelativeTo(null);
 		allButtons();
 	}
 	
-	private void RecepcionerGUI() {
-		JMenuBar meni = new JMenuBar();
-		JMenu noviGost = new JMenu("Novi gost");
-		JMenu rezervacije = new JMenu("Rezervacije");
-		JMenu sobe = new JMenu("Sobe");
-		JMenu prijavaGostiju = new JMenu("Check-in/out");
-		JMenu odjava = new JMenu("Odjavi se");
-		
-		meni.add(noviGost);
-		meni.add(rezervacije);
-		meni.add(sobe);
-		meni.add(prijavaGostiju);
-		meni.add(odjava);
-		
-		this.setJMenuBar(meni);
-		
-		prikaziNoviGost();
-	}
-	
-	private void prikaziNoviGost() {
-		JPanel panel = new JPanel(new MigLayout("wrap 2", "[]", "[]20[][][][][][][][]20[]"));
-		Border margin = new EmptyBorder(40, 300, 10, 300);
+	private void NoviGostGUI() {
+		JPanel panel = new JPanel(new MigLayout("wrap 2", "[]", "[]30[][][][][][][][]40[]"));
+		Border margin = new EmptyBorder(10, 150, 10, 150);
 		panel.setBorder(margin);
 		
 		pol.setSelectedIndex(0);

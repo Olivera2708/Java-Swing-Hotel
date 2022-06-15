@@ -20,9 +20,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import entity.Rezervacije;
 import entity.Sobe;
-import entity.Zaposleni;
 import gui.models.SobeModel;
-import gui.models.ZaposleniModel;
 import manage.ManageAll;
 
 public class AdministratorSobeFrame extends JFrame{

@@ -51,6 +51,12 @@ public class AdministratorPrikaziRezervaciju extends JFrame{
 			us = us.substring(0, us.length()-1);
 		}
 		
+		int cena = r.getCena();
+		
+		if (String.valueOf(r.getStatus()).equals("ODBIJENA")) {
+			cena = 0;
+		}
+		
 		panel.add(new JLabel("Id"));
 		panel.add(new JLabel(String.valueOf(r.getId())), "right wrap, grow");
 		panel.add(new JLabel("Tip sobe"));
@@ -64,7 +70,7 @@ public class AdministratorPrikaziRezervaciju extends JFrame{
 		panel.add(new JLabel("Datum do"));
 		panel.add(new JLabel(datum_formatter.format(r.getDoDatum())), "right, wrap, grow");
 		panel.add(new JLabel("Cena"));
-		panel.add(new JLabel(String.valueOf(r.getCena())), "right, wrap, grow");
+		panel.add(new JLabel(String.valueOf(cena)), "right, wrap, grow");
 		panel.add(new JLabel("Status"));
 		panel.add(new JLabel(String.valueOf(r.getStatus())), "right, wrap, grow");
 		

@@ -86,7 +86,13 @@ public class AdministratorIzmenaSobe extends JFrame{
 							JOptionPane.showMessageDialog(null, "Ovaj broj sobe se vec koristi.", "Greška", JOptionPane.ERROR_MESSAGE);
 						}
 						else {
-							manageAll.getSobeManager().edit(sobe.getBrojSobe(), Integer.parseInt(brojSobeText), manageAll.getTipSobeManager().get_id(tipSobeText), statusText);
+							int spremacica = 0;
+							try {
+								spremacica = sobe.getSpremacica().getId();
+							}
+							catch (NullPointerException ex){	
+							}
+							manageAll.getSobeManager().edit(sobe.getBrojSobe(), Integer.parseInt(brojSobeText), manageAll.getTipSobeManager().get_id(tipSobeText), statusText, spremacica);
 							JOptionPane.showMessageDialog(null, "Uspešno", "Informacija", JOptionPane.INFORMATION_MESSAGE);
 							zatvoriProzor();
 						}
