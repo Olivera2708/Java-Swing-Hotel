@@ -25,6 +25,8 @@ public class RecepcionerFrame extends JFrame {
 	
 	JButton btnOdjava;
 	JButton btnPrikazRezervacija;
+	JButton btnSobe;
+	JButton btnStanje;
 	JButton btnCheckIn;
 	JButton btnCheckOut;
 	JButton btnDodajGosta;
@@ -61,23 +63,31 @@ public class RecepcionerFrame extends JFrame {
 		
 		btnDodajGosta = new JButton("Novi gost");
 		btnDodajGosta.setPreferredSize(d);
-		getContentPane().add(btnDodajGosta, "cell 1 3,alignx center");
-		
-		btnPrikazRezervacija = new JButton("Potvrda rezervacija");
-		btnPrikazRezervacija.setPreferredSize(d);
-		getContentPane().add(btnPrikazRezervacija, "cell 1 4,alignx center");
+		getContentPane().add(btnDodajGosta, "cell 0 3,alignx right");
 		
 		btnCheckIn = new JButton("Check in");
 		btnCheckIn.setPreferredSize(d);
-		getContentPane().add(btnCheckIn, "cell 1 5,alignx center");
+		getContentPane().add(btnCheckIn, "cell 2 3,alignx left");
+		
+		btnSobe = new JButton("Status soba");
+		btnSobe.setPreferredSize(d);
+		getContentPane().add(btnSobe, "cell 0 4,alignx right");
 		
 		btnCheckOut = new JButton("Check out");
 		btnCheckOut.setPreferredSize(d);
-		getContentPane().add(btnCheckOut, "cell 1 6,alignx center");
+		getContentPane().add(btnCheckOut, "cell 2 4,alignx left");
+		
+		btnPrikazRezervacija = new JButton("Potvrda rezervacija");
+		btnPrikazRezervacija.setPreferredSize(d);
+		getContentPane().add(btnPrikazRezervacija, "cell 0 5,alignx right");
+		
+		btnStanje = new JButton("Dnevno stanje");
+		btnStanje.setPreferredSize(d);
+		getContentPane().add(btnStanje, "cell 0 6,alignx right");
 		
 		btnOdjava = new JButton("Odjava");
 		btnOdjava.setPreferredSize(d);
-		getContentPane().add(btnOdjava, "cell 1 7,alignx center");
+		getContentPane().add(btnOdjava, "cell 2 5,alignx left");
 	}
 	
 	private void Dugmici() {
@@ -96,10 +106,27 @@ public class RecepcionerFrame extends JFrame {
 			}
 		});
 		
+		btnSobe.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				RecepcionerUvidSobe uvid = new RecepcionerUvidSobe();
+				uvid.setVisible(true);
+			}
+			
+		});
+		
 		btnDodajGosta.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				RecepcionerDodajGosta novaRezervacija = new RecepcionerDodajGosta();
+				novaRezervacija.setVisible(true);
+			}
+		});
+		
+		btnStanje.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				RecepcionerStanje novaRezervacija = new RecepcionerStanje();
 				novaRezervacija.setVisible(true);
 			}
 		});

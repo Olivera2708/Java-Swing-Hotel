@@ -20,7 +20,7 @@ public class ManageAll {
 		this.uslugeManager = new UslugeManager();
 		this.cenovnikSobaManager = new CenovnikSobaManager(tipSobeManager);
 		this.cenovnikUslugaManager = new CenovnikUslugaManager(uslugeManager);
-		this.rezervacijeManager = new RezervacijeManager(tipSobeManager, uslugeManager, gostManager, cenovnikUslugaManager, cenovnikSobaManager, sobeManager);
+		this.rezervacijeManager = new RezervacijeManager(tipSobeManager, uslugeManager, gostManager, cenovnikUslugaManager, cenovnikSobaManager, sobeManager, zaposleniManager);
 	}
 	
 	//dobijanje instanci

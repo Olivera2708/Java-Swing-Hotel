@@ -93,6 +93,12 @@ public class AdministratorIzmenaSobe extends JFrame{
 							catch (NullPointerException ex){	
 							}
 							manageAll.getSobeManager().edit(sobe.getBrojSobe(), Integer.parseInt(brojSobeText), manageAll.getTipSobeManager().get_id(tipSobeText), statusText, spremacica);
+							if (sobe.getBrojSobe() == Integer.parseInt(brojSobeText)) {
+								manageAll.getRezervacijeManager().promeniSobe(sobe.getBrojSobe(), Integer.parseInt(brojSobeText));
+							}
+							if (statusText.equals("SPREMANJE")) {
+								manageAll.getSobeManager().dodeliSobuSpremacici(sobe.getBrojSobe());
+							}
 							JOptionPane.showMessageDialog(null, "Uspešno", "Informacija", JOptionPane.INFORMATION_MESSAGE);
 							zatvoriProzor();
 						}

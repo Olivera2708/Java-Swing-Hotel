@@ -5,7 +5,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -39,6 +41,10 @@ public class SobeManager {
 				catch (ArrayIndexOutOfBoundsException e) {
 				}
 				Sobe sobe = new Sobe(Integer.parseInt(vrednosti[0]), tipSobeManager.find(Integer.parseInt(vrednosti[1])), EnumStatusSobe.valueOf(vrednosti[2]), spremacica);
+				try {
+					this.ucitajIstoriju(vrednosti[4], sobe);
+				}
+				catch (ArrayIndexOutOfBoundsException e){}
 				this.sobeLista.add(sobe);
 			}
 			br.close();
@@ -69,7 +75,6 @@ public class SobeManager {
 		}
 		//odredi koja ima najmanje
 		Zaposleni najmanje = null;
-		
 		for (Zaposleni z: zaposleniManager.getAll()) {
 			if (z.getPozicija().equals("Sobarica")) {
 				if (!mapa.containsKey(z)){
@@ -79,7 +84,7 @@ public class SobeManager {
 			}
 		}
 		
-		int min = 0;
+		int min = (int) mapa.values().toArray()[0];
 		for (Zaposleni z: mapa.keySet()) {
 			if (mapa.get(z) <= min) {
 				min = mapa.get(z);
@@ -90,6 +95,25 @@ public class SobeManager {
 		this.edit(id, id, this.find(id).getTipSobe().getId(), "SPREMANJE", najmanje.getId());
 	}
 	
+	public HashMap<Zaposleni, Integer> getBrojSobaPoSobarici(Date odDatum, Date doDatum){
+		HashMap<Zaposleni, Integer> mapa = new HashMap<Zaposleni, Integer>();
+		for (Sobe s: sobeLista) {
+			List<String[]> sve = s.getDatumiSpremanja();
+			for (String[] string: sve) {
+				//proverim jel u mapi imam vec string[0] zaposleni ako imam +1 ako ne onda 1
+				Zaposleni z = zaposleniManager.find(Integer.parseInt(string[0]));
+				if (mapa.containsKey(z)) {
+					mapa.put(z, mapa.get(z)+1);
+				}
+				else {
+					mapa.put(z,  1);
+				}
+			}
+		}
+		
+		return mapa;
+	}
+	
 	public List<Integer> getSlobodneSobe(int tipSobe){
 		List<Integer> slobodne = new ArrayList<Integer>();
 		for (Sobe s: sobeLista) {
@@ -98,6 +122,36 @@ public class SobeManager {
 			}
 		}
 		return slobodne;
+	}
+	
+	public void ucitajIstoriju(String podaci, Sobe soba) {
+		List<String[]> mapa = new ArrayList<String[]>();
+		String[] lista = podaci.split(",");
+		for (String mini: lista) {
+			String[] podatak = mini.split(" ");
+			String[] novi = {podatak[0], podatak[1]};
+			mapa.add(novi);
+		}
+		soba.setDatumiSpremanja(mapa);
+	}
+	
+	public void dodajSpremanje(int idSpremacice, Sobe soba) {
+		List<String[]> mapa = soba.getDatumiSpremanja();
+		SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
+		String[] novi = {String.valueOf(idSpremacice), datum.format(new Date())};
+		mapa.add(novi);
+		soba.setDatumiSpremanja(mapa);
+		saveData();
+	}
+	
+	public int brojZauzetihSoba(){
+		int br = 0;
+		for (Sobe s: sobeLista) {
+			if (String.valueOf(s.getStatus()).equals("ZAUZETO")) {
+				br++;
+			}
+		}
+		return br;
 	}
 	
 	public List<Sobe> getPosao(Zaposleni sobarica){

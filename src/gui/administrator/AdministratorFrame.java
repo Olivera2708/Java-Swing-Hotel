@@ -30,6 +30,7 @@ public class AdministratorFrame extends JFrame {
 	JButton btnUsluge;
 	JButton btnGosti;
 	JButton btnRezervacije;
+	JButton btnIzvestaji;
 	JButton btnZaposleni;
 	
 	
@@ -89,11 +90,15 @@ public class AdministratorFrame extends JFrame {
 		
 		btnSobe = new JButton("Sobe");
 		btnSobe.setPreferredSize(d);
-		getContentPane().add(btnSobe, "cell 0 6,aligny top");
+		getContentPane().add(btnSobe, "cell 0 6");
+		
+		btnIzvestaji = new JButton("Izveštaji");
+		btnIzvestaji.setPreferredSize(d);
+		getContentPane().add(btnIzvestaji, "cell 0 7");
 		
 		btnOdjava = new JButton("Odjava");
 		btnOdjava.setPreferredSize(d);
-		getContentPane().add(btnOdjava, "cell 4 6");
+		getContentPane().add(btnOdjava, "cell 4 7");
 	}
 	
 	private void Dugmici() {
@@ -125,6 +130,14 @@ public class AdministratorFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				AdministratorTipSobeFrame tipSobe = new AdministratorTipSobeFrame();
 				tipSobe.setVisible(true);
+			}
+		});
+		
+		btnIzvestaji.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AdministratorIzvestaji izvestaji = new AdministratorIzvestaji();
+				izvestaji.setVisible(true);
 			}
 		});
 		

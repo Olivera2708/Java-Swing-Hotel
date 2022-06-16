@@ -161,6 +161,7 @@ public class RecepcionerPotvrdaRezervacija extends JFrame{
 				else {
 					manageAll.getRezervacijeManager().edit(id, ir.getTipSobe().getId(), lista_usluga, ir.getGost().getId(), ir.getOdDatum(), ir.getDoDatum(), "ODBIJENA", null);
 				}
+				manageAll.getRezervacijeManager().dodajDatumKraja(ir);
 				osveziTabelu();
 			}	
 		}

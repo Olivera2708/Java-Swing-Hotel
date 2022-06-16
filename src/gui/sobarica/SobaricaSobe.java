@@ -53,7 +53,6 @@ public class SobaricaSobe extends JFrame{
 		btnSpremljena.setPreferredSize(d);
 		
 		panel.add(btnSpremljena);
-		panel.add(btnSpremljena);
 		toolBar.add(panel);
 		
 		add(toolBar, BorderLayout.NORTH);
@@ -61,7 +60,7 @@ public class SobaricaSobe extends JFrame{
 	
 	private void prikaziTabelu() {
 		tabela = new JTable();
-		tabela.setModel(new SobaricaModel(manageAll.getSobeManager().getPosao(spremacica)));//Menjaj
+		tabela.setModel(new SobaricaModel(manageAll.getSobeManager().getPosao(spremacica)));
 		tabela.setShowGrid(true);
 		tabela.setGridColor(Color.GRAY);
 		tabela.setFont(tabela.getFont().deriveFont(14f));
@@ -108,6 +107,7 @@ public class SobaricaSobe extends JFrame{
 			//update sobu u slobodna
 			Sobe soba = manageAll.getSobeManager().find(id);
 			manageAll.getSobeManager().edit(id, id, soba.getTipSobe().getId(), "SLOBODNA", 0);
+			manageAll.getSobeManager().dodajSpremanje(spremacica.getId(), soba);
 			osveziTabelu();
 		}	
 	}

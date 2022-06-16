@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -22,6 +23,7 @@ import entity.Rezervacije;
 import entity.Sobe;
 import entity.TipSobe;
 import entity.Usluge;
+import entity.Zaposleni;
 
 public class RezervacijeManager {
 	private TipSobeManager tipSobeManager;
@@ -30,10 +32,10 @@ public class RezervacijeManager {
 	private CenovnikUslugaManager cenovnikUslugaManager;
 	private CenovnikSobaManager cenovnikSobaManager;
 	private SobeManager sobeManager;
+	private ZaposleniManager zaposleniManager;
 	private List<Rezervacije> rezervacijeLista;
 	
-	public RezervacijeManager(TipSobeManager tipSobeManager, UslugeManager uslugeManager, GostManager gostManager, CenovnikUslugaManager cenovnikUslugaManager, CenovnikSobaManager cenovnikSobaManager, SobeManager sobeManager) {
-		//super(); ne znam jel treba?
+	public RezervacijeManager(TipSobeManager tipSobeManager, UslugeManager uslugeManager, GostManager gostManager, CenovnikUslugaManager cenovnikUslugaManager, CenovnikSobaManager cenovnikSobaManager, SobeManager sobeManager, ZaposleniManager zaposleniManager) {
 		this.rezervacijeLista = new ArrayList<Rezervacije>();
 		this.tipSobeManager = tipSobeManager;
 		this.gostManager = gostManager;
@@ -41,6 +43,7 @@ public class RezervacijeManager {
 		this.cenovnikSobaManager = cenovnikSobaManager;
 		this.cenovnikUslugaManager = cenovnikUslugaManager;
 		this.sobeManager = sobeManager;
+		this.zaposleniManager = zaposleniManager;
 	}
 	
 	//ucitavanje podataka u objekat
@@ -60,13 +63,17 @@ public class RezervacijeManager {
 					}
 				}
 				Sobe soba = null;
-				try {
-					int brojSobe = Integer.parseInt(vrednosti[8]);
-					soba = sobeManager.find(brojSobe);
-				}
-				catch (ArrayIndexOutOfBoundsException e) {
+				if (vrednosti.length > 8){
+					if (!vrednosti[8].equals("")) {
+						int brojSobe = Integer.parseInt(vrednosti[8]);
+						soba = sobeManager.find(brojSobe);
+					}
 				}
 				Rezervacije rezervacije = new Rezervacije(Integer.parseInt(vrednosti[0]), tipSobeManager.find(Integer.parseInt(vrednosti[1])), lista_usluga, gostManager.find_name(vrednosti[3]), datum.parse(vrednosti[4]), datum.parse(vrednosti[5]), Integer.parseInt(vrednosti[6]), EnumStatusRezervacije.valueOf(vrednosti[7]), soba);
+				
+				if (!String.valueOf(rezervacije.getStatus()).equals("NA_CEKANJU")) {
+					this.ucitajDatumKraja(datum.parse(vrednosti[9]), rezervacije);
+				}
 				this.rezervacijeLista.add(rezervacije);
 			}
 			br.close();
@@ -93,8 +100,39 @@ public class RezervacijeManager {
 				catch (ArrayIndexOutOfBoundsException e) {
 				}
 				this.edit(ir.getId(), ir.getTipSobe().getId(), lista_usluga, ir.getGost().getId(), ir.getOdDatum(), ir.getDoDatum(), "ODBIJENA", soba);
+				this.dodajDatumKraja(ir);
 			}
 		}
+		saveData();
+	}
+	
+	public void promeniSobe(int stari, int novi) {
+		for (Rezervacije r: rezervacijeLista) {
+			if (r.getSoba() != null) {
+				if (r.getSoba().getBrojSobe() == stari) {
+					r.getSoba().setBrojSobe(novi);
+				}
+			}
+		}
+		saveData();
+	}
+	
+	public void promeniGosta(String staro, String novo) {
+		for (Rezervacije r: rezervacijeLista) {
+			if (r.getGost().getKorisnickoIme().equals(staro)) {
+				r.getGost().setKorisnickoIme(novo);
+			}
+		}
+		saveData();
+	}
+	
+	public void ucitajDatumKraja(Date datum, Rezervacije r) {
+		r.setKonacanDatum(datum);
+		saveData();
+	}
+	
+	public void dodajDatumKraja(Rezervacije r) {
+		r.setKonacanDatum(new Date());
 		saveData();
 	}
 	
@@ -124,11 +162,34 @@ public class RezervacijeManager {
 		return rezervacije;
 	}
 	
+	//check in
 	public List<Rezervacije> getRezervacijePotvrdjene(){
 		List<Rezervacije> rezervacije = new ArrayList<>();
 		for (Rezervacije r: rezervacijeLista) {
 			SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
 			if (String.valueOf(r.getStatus()).equals("POTVRDJENA") && r.getSoba() == null && datum.format(r.getOdDatum()).equals(datum.format(new Date()))) {
+				rezervacije.add(r);
+			}
+		}
+		return rezervacije;
+	}
+	
+	public List<Rezervacije> getDolasci(){
+		List<Rezervacije> rezervacije = new ArrayList<>();
+		for (Rezervacije r: rezervacijeLista) {
+			SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
+			if (datum.format(r.getOdDatum()).equals(datum.format(new Date()))){
+				rezervacije.add(r);
+			}
+		}
+		return rezervacije;
+	}
+	
+	public List<Rezervacije> getOdlasci(){
+		List<Rezervacije> rezervacije = new ArrayList<>();
+		for (Rezervacije r: rezervacijeLista) {
+			SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
+			if (datum.format(r.getDoDatum()).equals(datum.format(new Date()))){
 				rezervacije.add(r);
 			}
 		}
@@ -145,6 +206,78 @@ public class RezervacijeManager {
 			}
 		}
 		return rezervacije;
+	}
+	
+	public int getPrihodi(Date datumOd, Date datumDo) {
+		int prihodi = 0;
+		
+		int dani = (int) ChronoUnit.DAYS.between(datumOd.toInstant(), datumDo.toInstant());
+		for (int i = 0; i <= dani; i++) {
+			Date danas = new Date(datumOd.getTime() + i * (1000 * 60 * 60 * 24));
+			for (Rezervacije r: rezervacijeLista) {
+				if (!String.valueOf(r.getStatus()).equals("OTKAZANA") && !String.valueOf(r.getStatus()).equals("NA_CEKANJU")) {
+					SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
+					if (datum.format(r.getKonacanDatum()).equals(datum.format(danas))) {
+						prihodi += r.getCena();
+					}
+				}
+			}
+		}
+		return prihodi;
+	}
+	
+	public int getBrojPotvrdjenih(Date datumOd, Date datumDo){
+		int brojac = 0;
+		for (Rezervacije r: rezervacijeLista) {
+			if (String.valueOf(r.getStatus()).equals("POTVRDJENA")) {
+				SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
+				if (datum.format(r.getKonacanDatum()).equals(datum.format(datumDo)) || datum.format(r.getKonacanDatum()).equals(datum.format(datumOd)) || (datumOd.before(r.getKonacanDatum()) && datumDo.after(r.getKonacanDatum()))) {
+					brojac ++;
+				}
+			}
+		}
+		return brojac;
+	}
+	
+	public int getBrojOdbijenih(Date datumOd, Date datumDo){
+		int brojac = 0;
+		for (Rezervacije r: rezervacijeLista) {
+			if (String.valueOf(r.getStatus()).equals("ODBIJENA")) {
+				SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
+				if (datum.format(r.getKonacanDatum()).equals(datum.format(datumDo)) || datum.format(r.getKonacanDatum()).equals(datum.format(datumOd)) || (datumOd.before(r.getKonacanDatum()) && datumDo.after(r.getKonacanDatum()))) {
+					brojac ++;
+				}
+			}
+		}
+		return brojac;
+	}
+	
+	public int getBrojOtkazanih(Date datumOd, Date datumDo){
+		int brojac = 0;
+		for (Rezervacije r: rezervacijeLista) {
+			if (String.valueOf(r.getStatus()).equals("OTKAZANA")) {
+				SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
+				if (datum.format(r.getKonacanDatum()).equals(datum.format(datumDo)) || datum.format(r.getKonacanDatum()).equals(datum.format(datumOd)) || (datumOd.before(r.getKonacanDatum()) && datumDo.after(r.getKonacanDatum()))) {
+					brojac ++;
+				}
+			}
+		}
+		return brojac;
+	}
+	
+	public int getRashodi(Date odDatum, Date doDatum) {
+		int rashodi = 0;
+		int meseci = 0;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(doDatum);
+		meseci += cal.get(Calendar.MONTH);
+		cal.setTime(odDatum);
+		meseci -= cal.get(Calendar.MONTH);
+		
+		for (Zaposleni z: zaposleniManager.getAll()) {
+			rashodi += z.getPlata();
+		}
+		return rashodi * meseci;
 	}
 	
 	//cuvanje podataka iz objekta nazad u csv

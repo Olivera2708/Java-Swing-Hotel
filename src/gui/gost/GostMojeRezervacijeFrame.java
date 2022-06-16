@@ -150,6 +150,7 @@ public class GostMojeRezervacijeFrame extends JFrame{
 			}
 			
 			manageAll.getRezervacijeManager().edit(id, ir.getTipSobe().getId(), lista_usluga, gost.getId(), ir.getOdDatum(), ir.getDoDatum(), "OTKAZANA", null);
+			manageAll.getRezervacijeManager().dodajDatumKraja(ir);
 			osveziTabelu();
 		}	
 	}

@@ -140,6 +140,7 @@ public class AdministratorIzmenaGosta extends JFrame{
 						else {
 							try {
 								manageAll.getGostManager().edit(gost.getId(), imeText, prezimeText, polText, datum_formatter.parse(datumText), telefonText, adresaText, korisnickoText, lozinkaText);
+								manageAll.getRezervacijeManager().promeniGosta(gost.getKorisnickoIme(), korisnickoText);
 								JOptionPane.showMessageDialog(null, "Uspešno", "Informacija", JOptionPane.INFORMATION_MESSAGE);
 								zatvoriProzor();
 							} catch (ParseException e1) {
