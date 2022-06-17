@@ -422,14 +422,44 @@ public class RezervacijeManager {
 		return cena;
 	}
 	
-	public int brojSlobodnihSoba(int id_tipaSobe, Date datumOd, Date datumDo) {
+	public int brojSlobodnihSoba(int id_tipaSobe, Date datumOd, Date datumDo, String[] sadrzaji) {
 		//predbroj koliko ima izabranog tipa soba
+		int ukupnoSaSadrzajem = 0;
 		int ukupno = 0;
+		List<Integer> sobeSaSadrzajem = new ArrayList<Integer>(); 
 		for (Sobe s: sobeManager.getAll()) {
 			if (s.getTipSobe().getId() == id_tipaSobe) {
-				ukupno++;
+				ukupno ++;
+				boolean postoji = true;
+				if (sadrzaji != null) {
+					if (s.getSadrzaj() != null) {
+						for (String st: sadrzaji) {
+							boolean nasli = false;
+							for (String ss: s.getSadrzaj()) {
+								if (ss.equals(st)) {
+									nasli = true;
+								}
+							}
+							if (!nasli) {
+								postoji = false;
+								break;
+							}
+						}
+					}
+					else {
+						continue;
+					}
+					if (postoji) {
+						sobeSaSadrzajem.add(s.getBrojSobe());
+						ukupnoSaSadrzajem ++;
+					}
+				}
+				else {
+					ukupnoSaSadrzajem++;
+				}
 			}
 		}
+		//izbrojala ukupan broj soba tog tipa koje sadrze sve sadrzaje
 		
 		int zauzete = 0;
 		for (Rezervacije s: rezervacijeLista) {
@@ -440,16 +470,20 @@ public class RezervacijeManager {
 					zauzete++;
 				}
 			}
+			
 		}
-		return ukupno - zauzete;
+		if (ukupno - zauzete != 0 && ukupnoSaSadrzajem > 0) {
+			return 1;
+		}
+		return 0;
 	}
 	
 	//vraca za izabran datum sta se sve moze rezervisati
-	public List<String> getSlobodneSobe(Date datumOd, Date datumDo){
+	public List<String> getSlobodneSobe(Date datumOd, Date datumDo, String[] sadrzaji){
 		List<String> sve = new ArrayList<String>();
 		//za svaki tip sobe
 		for (TipSobe s: tipSobeManager.getAll()) {
-			if (brojSlobodnihSoba(s.getId(), datumOd, datumDo) == 0) {
+			if (brojSlobodnihSoba(s.getId(), datumOd, datumDo, sadrzaji) == 0) {
 				continue;
 			}
 			//provara jel moze da se izracuna cena za tip sobe

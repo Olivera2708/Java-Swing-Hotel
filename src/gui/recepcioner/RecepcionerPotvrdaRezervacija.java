@@ -239,7 +239,7 @@ public class RecepcionerPotvrdaRezervacija extends JFrame{
 		});
 		
 		sortOrder.put(index, sortOrder.get(index)*-1);
-		osveziTabelu();	
+		osveziTabelu(true);	
 	}
 	
 	private void areYouSure(int id, boolean potvrda) {
@@ -254,7 +254,7 @@ public class RecepcionerPotvrdaRezervacija extends JFrame{
 			lista_usluga[i] = ir.getUsluge().get(i).getId();
 		}
 		//provara jel ima slobodnih soba
-		if (manageAll.getRezervacijeManager().brojSlobodnihSoba(ir.getTipSobe().getId(), ir.getOdDatum(), ir.getDoDatum()) == 0) {
+		if (manageAll.getRezervacijeManager().brojSlobodnihSoba(ir.getTipSobe().getId(), ir.getOdDatum(), ir.getDoDatum(), null) == 0) {
 			JOptionPane.showMessageDialog(null, "Ne postoji slobodna soba za ovaj period.", "Greška", JOptionPane.WARNING_MESSAGE);
 		}
 		else {
@@ -272,13 +272,19 @@ public class RecepcionerPotvrdaRezervacija extends JFrame{
 					manageAll.getRezervacijeManager().edit(id, ir.getTipSobe().getId(), lista_usluga, ir.getGost().getId(), ir.getOdDatum(), ir.getDoDatum(), "ODBIJENA", null);
 				}
 				manageAll.getRezervacijeManager().dodajDatumKraja(ir);
-				osveziTabelu();
+				osveziTabelu(false);
 			}	
 		}
 	}
 	
-	private void osveziTabelu() {
-		tabela.setModel(this.tabela.getModel());
+	private void osveziTabelu(boolean search) {
+		if (search) {
+			tabela.setModel(this.tabela.getModel());
+		}
+		else {
+			tabela.setModel(new PotvrdaRezervacijeModel(manageAll.getRezervacijeManager().getRezervacijeNaCekanju()));
+			tableSorter.setModel((AbstractTableModel) tabela.getModel());
+		}
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 		tabela.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);

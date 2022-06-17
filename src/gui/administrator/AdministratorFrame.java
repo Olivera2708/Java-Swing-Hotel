@@ -1,5 +1,6 @@
 package gui.administrator;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -13,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import chart.PieChart30Dana;
 import entity.Zaposleni;
 import manage.ManageAll;
 import net.miginfocom.swing.MigLayout;
@@ -32,6 +34,7 @@ public class AdministratorFrame extends JFrame {
 	JButton btnRezervacije;
 	JButton btnIzvestaji;
 	JButton btnZaposleni;
+	JButton btnChart;
 	
 	
 	
@@ -92,6 +95,10 @@ public class AdministratorFrame extends JFrame {
 		btnSobe.setPreferredSize(d);
 		getContentPane().add(btnSobe, "cell 0 6");
 		
+		btnChart = new JButton("Grafički prikaz");
+		btnChart.setPreferredSize(d);
+		getContentPane().add(btnChart, "cell 4 6");
+		
 		btnIzvestaji = new JButton("Izveštaji");
 		btnIzvestaji.setPreferredSize(d);
 		getContentPane().add(btnIzvestaji, "cell 0 7");
@@ -146,6 +153,14 @@ public class AdministratorFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				AdministratorUslugeFrame usluga = new AdministratorUslugeFrame();
 				usluga.setVisible(true);
+			}
+		});
+		
+		btnChart.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AdministratorChart chart = new AdministratorChart();
+				chart.setVisible(true);
 			}
 		});
 		

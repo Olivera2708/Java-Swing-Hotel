@@ -11,13 +11,15 @@ public class Sobe {
 	private EnumStatusSobe status;
 	private Zaposleni spremacica;
 	private List<String[]> datumiSpremanja;
+	private String[] sadrzaj;
 	
-	public Sobe(int id, TipSobe tipSobe, EnumStatusSobe status, Zaposleni spremacica) {
+	public Sobe(int id, TipSobe tipSobe, EnumStatusSobe status, Zaposleni spremacica, String[] sadrzaj) {
 		this.brojSobe = id;
 		this.tipSobe = tipSobe;
 		this.status = status;
 		this.spremacica = spremacica;
 		this.datumiSpremanja = new ArrayList<String[]>();
+		this.sadrzaj = sadrzaj;
 	}
 
 	public List<String[]> getDatumiSpremanja() {
@@ -65,7 +67,22 @@ public class Sobe {
 			}
 			spremanja = spremanja.substring(0, spremanja.length() - 1);
 		}
-		return brojSobe+";"+tipSobe.getId()+";"+status+";"+id_spremacice+";"+spremanja;
+		String sadrzaji = "";
+		if (sadrzaj != null) {
+			for (String s: sadrzaj) {
+				sadrzaji += s + ",";
+			}
+			sadrzaji = sadrzaji.substring(0, sadrzaji.length()-1);
+		}
+		return brojSobe+";"+tipSobe.getId()+";"+status+";"+id_spremacice+";"+spremanja+";"+sadrzaji;
+	}
+
+	public String[] getSadrzaj() {
+		return sadrzaj;
+	}
+
+	public void setSadrzaj(String[] sadrzaj) {
+		this.sadrzaj = sadrzaj;
 	}
 
 	public Zaposleni getSpremacica() {

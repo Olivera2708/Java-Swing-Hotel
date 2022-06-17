@@ -4,11 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -31,12 +33,14 @@ public class AdministratorIzmenaSobe extends JFrame{
 	JComboBox<String> status = new JComboBox<>(opcije_status);
 	String[] opcije_tip = manageAll.getTipSobeManager().getNames();
 	JComboBox<String> tipSobe = new JComboBox<>(opcije_tip);
+	String[] dodatne_stvari = {"Klima", "TV", "Balkon", "Pušačka", "Nepušačka"};
+	JList<String> sadrzaji = new JList<String>(dodatne_stvari);
 	
 	public AdministratorIzmenaSobe (Sobe tipSobe) {
 		this.sobe = tipSobe;
 		
 		this.setTitle("Sobe");
-		this.setPreferredSize(new Dimension(500, 300));
+		this.setPreferredSize(new Dimension(500, 400));
 		this.setResizable(false);
 		prikaziNovigost();
 		this.pack();
@@ -45,7 +49,7 @@ public class AdministratorIzmenaSobe extends JFrame{
 	}
 	
 	private void prikaziNovigost() {
-		JPanel panel = new JPanel(new MigLayout("wrap 2", "[]10[][][]", "[]20[]"));
+		JPanel panel = new JPanel(new MigLayout("wrap 2", "[]10[][][][]", "[]20[]"));
 		Border margin = new EmptyBorder(10, 10, 10, 10);
 		panel.setBorder(margin);
 		
@@ -56,6 +60,13 @@ public class AdministratorIzmenaSobe extends JFrame{
 		brojSobe.setText(String.valueOf(sobe.getBrojSobe()));
 		status.setSelectedItem(String.valueOf(sobe.getStatus()));
 		tipSobe.setSelectedItem(sobe.getTipSobe().getTip());
+		if (sobe.getSadrzaj() != null) {
+			int[] oznaceni = new int[sobe.getSadrzaj().length];
+			for (int i = 0; i < sobe.getSadrzaj().length; i++) {
+				oznaceni[i] = Arrays.asList(dodatne_stvari).indexOf(sobe.getSadrzaj()[i]);
+			}
+			sadrzaji.setSelectedIndices(oznaceni);
+		}
 		
 		panel.add(new JLabel("Broj sobe"));
 		panel.add(brojSobe, "right, wrap, grow");
@@ -63,6 +74,8 @@ public class AdministratorIzmenaSobe extends JFrame{
 		panel.add(status, "right, wrap, grow");
 		panel.add(new JLabel("Tip sobe"));
 		panel.add(tipSobe, "right, wrap, grow");
+		panel.add(new JLabel("Sadžaji"));
+		panel.add(sadrzaji, "right, wrap, grow");
 		
 		panel.add(btnKreiraj, "center, span 2");
 		
@@ -77,6 +90,15 @@ public class AdministratorIzmenaSobe extends JFrame{
 					String brojSobeText = brojSobe.getText().trim();
 					String statusText = (String) status.getSelectedItem();
 					String tipSobeText = (String) tipSobe.getSelectedItem();
+					int[] sadrzajiText = sadrzaji.getSelectedIndices();
+					
+					String[] lista_sadrzaja = null;
+					if (sadrzajiText.length != 0) {
+						lista_sadrzaja = new String[sadrzajiText.length];
+						for (int i = 0; i < sadrzajiText.length; i++) {
+							lista_sadrzaja[i] = dodatne_stvari[sadrzajiText[i]];
+						}
+					}
 		
 					try {
 						if (Integer.parseInt(brojSobeText) <= 0) {
@@ -92,7 +114,7 @@ public class AdministratorIzmenaSobe extends JFrame{
 							}
 							catch (NullPointerException ex){	
 							}
-							manageAll.getSobeManager().edit(sobe.getBrojSobe(), Integer.parseInt(brojSobeText), manageAll.getTipSobeManager().get_id(tipSobeText), statusText, spremacica);
+							manageAll.getSobeManager().edit(sobe.getBrojSobe(), Integer.parseInt(brojSobeText), manageAll.getTipSobeManager().get_id(tipSobeText), statusText, spremacica, lista_sadrzaja);
 							if (sobe.getBrojSobe() == Integer.parseInt(brojSobeText)) {
 								manageAll.getRezervacijeManager().promeniSobe(sobe.getBrojSobe(), Integer.parseInt(brojSobeText));
 							}

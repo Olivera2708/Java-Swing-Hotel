@@ -7,7 +7,7 @@ import entity.Sobe;
 
 public class SobeModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
-	private String[] header = { "Broj sobe", "Tip sobe", "Status"};
+	private String[] header = { "Broj sobe", "Tip sobe", "Status", "Sadržaji"};
 	private List<Sobe> data;
 	
 	public SobeModel(List<Sobe> data) {
@@ -44,6 +44,16 @@ public class SobeModel extends AbstractTableModel {
 			return z.getTipSobe().getTip();
 		case 2:
 			return z.getStatus();
+		case 3:
+			String sadrzaji = "";
+			if (z.getSadrzaj() == null) {
+				return sadrzaji;
+			}
+			for (String s: z.getSadrzaj()) {
+				sadrzaji += s + ", ";
+			}
+			sadrzaji = sadrzaji.substring(0, sadrzaji.length()-2);
+			return sadrzaji;
 		default:
 			return null;
 		}

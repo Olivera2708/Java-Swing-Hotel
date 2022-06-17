@@ -34,7 +34,7 @@ public class AdministratorSobeFrame extends JFrame{
 
 	AdministratorSobeFrame () {
 		this.setTitle("Sobe");
-		this.setPreferredSize(new Dimension(800, 600));
+		this.setPreferredSize(new Dimension(900, 600));
 		this.setResizable(false);
 		prikaziDugmice();
 		prikaziTabelu();

@@ -1,5 +1,6 @@
 package main;
 
+import chart.PieChart30Dana;
 import gui.MainFrame;
 import manage.ManageAll;
 

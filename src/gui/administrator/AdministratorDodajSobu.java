@@ -9,10 +9,12 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -33,12 +35,16 @@ public class AdministratorDodajSobu extends JFrame{
 	JComboBox<String> status = new JComboBox<>(opcije_status);
 	String[] opcije_tip = manageAll.getTipSobeManager().getNames();
 	JComboBox<String> tipSobe = new JComboBox<>(opcije_tip);
+	String[] dodatne_stvari = {"Klima", "TV", "Balkon", "Pušačka", "Nepušačka"};
+	JList<String> sadrzaji = new JList<String>(dodatne_stvari);
 	
 	public AdministratorDodajSobu (JTable tabela) {
 		this.tabela= tabela;
+		sadrzaji.setSelectionMode(
+                ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		
 		this.setTitle("Sobe");
-		this.setPreferredSize(new Dimension(500, 300));
+		this.setPreferredSize(new Dimension(500, 400));
 		this.setResizable(false);
 		prikaziNovigost();
 		this.pack();
@@ -47,11 +53,11 @@ public class AdministratorDodajSobu extends JFrame{
 	}
 	
 	private void prikaziNovigost() {
-		JPanel panel = new JPanel(new MigLayout("wrap 2", "[]10[][][]", "[]20[]"));
+		JPanel panel = new JPanel(new MigLayout("wrap 2", "[]10[][][][]", "[]20[]"));
 		Border margin = new EmptyBorder(10, 10, 10, 10);
 		panel.setBorder(margin);
 		
-		JLabel naslov = new JLabel("Izmena podataka o sobi");
+		JLabel naslov = new JLabel("Dodaj sobu");
 		naslov.setFont(naslov.getFont().deriveFont(18f));
 		panel.add(naslov, "center, span 2");
 		
@@ -61,6 +67,8 @@ public class AdministratorDodajSobu extends JFrame{
 		panel.add(status, "right, wrap, grow");
 		panel.add(new JLabel("Tip sobe"));
 		panel.add(tipSobe, "right, wrap, grow");
+		panel.add(new JLabel("Sadržaji"));
+		panel.add(sadrzaji, "right, wrap, grow");
 		
 		panel.add(btnKreiraj, "center, span 2");
 		
@@ -75,6 +83,15 @@ public class AdministratorDodajSobu extends JFrame{
 					String brojSobeText = brojSobe.getText().trim();
 					String statusText = (String) status.getSelectedItem();
 					String tipSobeText = (String) tipSobe.getSelectedItem();
+					int[] sadrzajiText = sadrzaji.getSelectedIndices();
+					
+					String[] lista_sadrzaja = null;
+					if (sadrzajiText.length != 0) {
+						lista_sadrzaja = new String[sadrzajiText.length];
+						for (int i = 0; i < sadrzajiText.length; i++) {
+							lista_sadrzaja[i] = dodatne_stvari[sadrzajiText[i]];
+						}
+					}
 		
 					try {
 						if (Integer.parseInt(brojSobeText) <= 0) {
@@ -84,7 +101,7 @@ public class AdministratorDodajSobu extends JFrame{
 							JOptionPane.showMessageDialog(null, "Ovaj broj sobe se vec koristi.", "Greška", JOptionPane.ERROR_MESSAGE);
 						}
 						else {
-							manageAll.getSobeManager().add(Integer.parseInt(brojSobeText), manageAll.getTipSobeManager().get_id(tipSobeText), statusText);
+							manageAll.getSobeManager().add(Integer.parseInt(brojSobeText), manageAll.getTipSobeManager().get_id(tipSobeText), statusText, lista_sadrzaja);
 							JOptionPane.showMessageDialog(null, "Uspešno", "Informacija", JOptionPane.INFORMATION_MESSAGE);
 							zatvoriProzor();
 							osveziTabelu();

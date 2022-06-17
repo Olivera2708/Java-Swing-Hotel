@@ -40,7 +40,13 @@ public class SobeManager {
 				}
 				catch (ArrayIndexOutOfBoundsException e) {
 				}
-				Sobe sobe = new Sobe(Integer.parseInt(vrednosti[0]), tipSobeManager.find(Integer.parseInt(vrednosti[1])), EnumStatusSobe.valueOf(vrednosti[2]), spremacica);
+				String[] sadrzaji = null;
+				try {
+					sadrzaji = vrednosti[5].split(",");
+				}
+				catch (ArrayIndexOutOfBoundsException e) {
+				}
+				Sobe sobe = new Sobe(Integer.parseInt(vrednosti[0]), tipSobeManager.find(Integer.parseInt(vrednosti[1])), EnumStatusSobe.valueOf(vrednosti[2]), spremacica, sadrzaji);
 				try {
 					this.ucitajIstoriju(vrednosti[4], sobe);
 				}
@@ -92,7 +98,7 @@ public class SobeManager {
 			}
 		}
 		
-		this.edit(id, id, this.find(id).getTipSobe().getId(), "SPREMANJE", najmanje.getId());
+		this.edit(id, id, this.find(id).getTipSobe().getId(), "SPREMANJE", najmanje.getId(), this.find(id).getSadrzaj());
 	}
 	
 	public HashMap<Zaposleni, Integer> getBrojSobaPoSobarici(Date odDatum, Date doDatum){
@@ -192,18 +198,19 @@ public class SobeManager {
 	}
 	
 	//izmeni sobu
-	public void edit(int id, int novi_id, int tipSobe, String status, int spremacicaId) {
+	public void edit(int id, int novi_id, int tipSobe, String status, int spremacicaId, String[] sadrzaji) {
 		Sobe s = this.find(id);
 		s.setBrojSobe(novi_id);
 		s.setTipSobe(tipSobeManager.find(tipSobe));
 		s.setStatus(EnumStatusSobe.valueOf(status));
 		s.setSpremacica(zaposleniManager.find(spremacicaId));
+		s.setSadrzaj(sadrzaji);
 		saveData();
 	}
 	
 	//dodaj novu sobu
-	public void add(int id, int tipSobe, String status) {
-		this.sobeLista.add(new Sobe(id, tipSobeManager.find(tipSobe), EnumStatusSobe.valueOf(status), null));
+	public void add(int id, int tipSobe, String status, String[] sadrzaji) {
+		this.sobeLista.add(new Sobe(id, tipSobeManager.find(tipSobe), EnumStatusSobe.valueOf(status), null, sadrzaji));
 		this.saveData();
 	}
 	

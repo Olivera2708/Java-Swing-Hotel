@@ -106,7 +106,7 @@ public class SobaricaSobe extends JFrame{
 		if (vrednost == JOptionPane.YES_OPTION) {
 			//update sobu u slobodna
 			Sobe soba = manageAll.getSobeManager().find(id);
-			manageAll.getSobeManager().edit(id, id, soba.getTipSobe().getId(), "SLOBODNA", 0);
+			manageAll.getSobeManager().edit(id, id, soba.getTipSobe().getId(), "SLOBODNA", 0, soba.getSadrzaj());
 			manageAll.getSobeManager().dodajSpremanje(spremacica.getId(), soba);
 			osveziTabelu();
 		}	

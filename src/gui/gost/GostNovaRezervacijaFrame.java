@@ -42,6 +42,8 @@ public class GostNovaRezervacijaFrame extends JFrame{
 	DefaultListModel<String> opcije_usluga = new DefaultListModel<String>();
 	JList<String> usluge = new JList<>(opcije_usluga);
 	JComboBox<String> tipSobe = new JComboBox<>();
+	String[] dodatne_stvari = {"Klima", "TV", "Balkon", "Pušačka", "Nepušačka"};
+	JList<String> sadrzaji = new JList<String>(dodatne_stvari);
 	JFormattedTextField datumOd = new JFormattedTextField(datum_formatter);
 	JFormattedTextField datumDo = new JFormattedTextField(datum_formatter);
 	
@@ -53,7 +55,7 @@ public class GostNovaRezervacijaFrame extends JFrame{
                 ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		
 		this.setTitle("Rezervacije");
-		this.setPreferredSize(new Dimension(800, 500));
+		this.setPreferredSize(new Dimension(800, 600));
 		this.setResizable(false);
 		prikaziNovigost();
 		this.pack();
@@ -78,6 +80,8 @@ public class GostNovaRezervacijaFrame extends JFrame{
 		panel.add(datumOd, "right, wrap, grow");
 		panel.add(new JLabel("Datum do"));
 		panel.add(datumDo, "right, wrap, grow");
+		panel.add(new JLabel("Sadržaji"));
+		panel.add(sadrzaji, "right, wrap, grow");
 		
 		panel.add(btnPretraga, "center, span 2");
 		
@@ -124,6 +128,17 @@ public class GostNovaRezervacijaFrame extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				String datumOdText = datumOd.getText();
 				String datumDoText = datumDo.getText();
+				
+				int[] sadrzajiText = sadrzaji.getSelectedIndices();
+				
+				String[] lista_sadrzaja = null;
+				if (sadrzajiText.length != 0) {
+					lista_sadrzaja = new String[sadrzajiText.length];
+					for (int i = 0; i < sadrzajiText.length; i++) {
+						lista_sadrzaja[i] = dodatne_stvari[sadrzajiText[i]];
+					}
+				}
+				
 				boolean greska = false;
 				try {
 					if (datum_formatter.parse(datumOdText).after(datum_formatter.parse(datumDoText)) || datum_formatter.parse(datumOdText).equals(datum_formatter.parse(datumDoText)) || datum_formatter.parse(datumOdText).before(new java.util.Date())) {
@@ -137,10 +152,10 @@ public class GostNovaRezervacijaFrame extends JFrame{
 				if (!greska) {
 					String[] opcije_tip;
 					try {
-						opcije_tip = manageAll.getRezervacijeManager().getSlobodneSobe(datum_formatter.parse(datumOdText), datum_formatter.parse(datumDoText)).toArray(new String[0]);
+						opcije_tip = manageAll.getRezervacijeManager().getSlobodneSobe(datum_formatter.parse(datumOdText), datum_formatter.parse(datumDoText), lista_sadrzaja).toArray(new String[0]);
 						tipSobe.removeAllItems();
 						if (opcije_tip.length == 0) {
-							JOptionPane.showMessageDialog(null, "Ne postoje slobodne sobe za izabrani datum.", "Informacija", JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.showMessageDialog(null, "Ne postoje slobodne sobe za izabrani datum i sadržaje.", "Informacija", JOptionPane.INFORMATION_MESSAGE);
 						}
 						for (String s: opcije_tip) {
 							tipSobe.addItem(s);
