@@ -123,7 +123,6 @@ public class Rezervacije {
 		this.status = status;
 	}
 
-
 	public String toFileString() {
 		SimpleDateFormat datum_formatter = new SimpleDateFormat("yyyy-MM-dd");
 		String od_datum_string = datum_formatter.format(odDatum);

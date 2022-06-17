@@ -8,7 +8,7 @@ import entity.Rezervacije;
 
 public class RezervacijeModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
-	private String[] header = { "Id", "Gost", "Datum od", "Datum do", "Status"};
+	private String[] header = { "Id", "Gost", "Datum od", "Datum do", "Status", "Cena"};
 	private List<Rezervacije> data;
 	
 	public RezervacijeModel(List<Rezervacije> data) {
@@ -49,6 +49,11 @@ public class RezervacijeModel extends AbstractTableModel {
 			return z.getDoDatum();
 		case 4:
 			return z.getStatus();
+		case 5:
+			if (String.valueOf(z.getStatus()).equals("ODBIJENA")) {
+				return 0;
+			}
+			return z.getCena();
 		default:
 			return null;
 		}

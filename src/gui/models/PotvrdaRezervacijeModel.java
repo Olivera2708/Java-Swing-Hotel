@@ -1,18 +1,18 @@
 package gui.models;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
-import entity.CenaSobe;
+import entity.Rezervacije;
+import entity.Usluge;
 
 
-public class CenovnikSobeModel extends AbstractTableModel {
+public class PotvrdaRezervacijeModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
-	private String[] header = { "Id", "Usluga", "Datum od", "Datum do", "Cena"};
-	private List<CenaSobe> data;
+	private String[] header = {"Id", "Tip sobe", "Datum od", "Datum do", "Cena", "Dodatne usluge"};
+	private List<Rezervacije> data;
 	
-	public CenovnikSobeModel(List<CenaSobe> data) {
+	public PotvrdaRezervacijeModel(List<Rezervacije> data) {
 		this.data = data;
 	}
 
@@ -38,19 +38,24 @@ public class CenovnikSobeModel extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		CenaSobe z = data.get(rowIndex);
-		SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
+		Rezervacije z = data.get(rowIndex);
 		switch (columnIndex) {
 		case 0:
 			return z.getId();
 		case 1:
 			return z.getTipSobe().getTip();
 		case 2:
-			return datum.format(z.getOdDatum());
+			return z.getOdDatum();
 		case 3:
-			return datum.format(z.getDoDatum());
+			return z.getDoDatum();
 		case 4:
 			return z.getCena();
+		case 5:
+			String usluge = "";
+			for (Usluge u: z.getUsluge()) {
+				usluge += u.getTip() + ", ";
+			}
+			return usluge.substring(0, usluge.length()-2);
 		default:
 			return null;
 		}

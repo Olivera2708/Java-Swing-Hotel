@@ -1,18 +1,17 @@
 package gui.models;
 
-import java.text.SimpleDateFormat;
-import java.util.List;
+import java.util.HashMap;
 import javax.swing.table.AbstractTableModel;
 
-import entity.CenaSobe;
+import entity.Sobe;
 
 
-public class CenovnikSobeModel extends AbstractTableModel {
+public class SobeIzvestajModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
-	private String[] header = { "Id", "Usluga", "Datum od", "Datum do", "Cena"};
-	private List<CenaSobe> data;
+	private String[] header = {"Broj sobe", "Tip sobe", "Broj noćenja", "Prihodi"};
+	private HashMap<Sobe, Integer[]> data;
 	
-	public CenovnikSobeModel(List<CenaSobe> data) {
+	public SobeIzvestajModel(HashMap<Sobe, Integer[]> data) {
 		this.data = data;
 	}
 
@@ -38,19 +37,17 @@ public class CenovnikSobeModel extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		CenaSobe z = data.get(rowIndex);
-		SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
+		Sobe s = (Sobe) data.keySet().toArray()[rowIndex];
+		Integer[] lista = (Integer[]) data.values().toArray()[rowIndex];
 		switch (columnIndex) {
 		case 0:
-			return z.getId();
+			return s.getBrojSobe();
 		case 1:
-			return z.getTipSobe().getTip();
+			return s.getTipSobe().getTip();
 		case 2:
-			return datum.format(z.getOdDatum());
+			return lista[0];
 		case 3:
-			return datum.format(z.getDoDatum());
-		case 4:
-			return z.getCena();
+			return lista[1];
 		default:
 			return null;
 		}

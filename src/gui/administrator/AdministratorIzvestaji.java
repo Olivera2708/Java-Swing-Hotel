@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
+import entity.Sobe;
 import entity.Zaposleni;
 import manage.ManageAll;
 
@@ -38,7 +39,7 @@ public class AdministratorIzvestaji extends JFrame{
 
 	AdministratorIzvestaji () {
 		this.setTitle("Izveštaji");
-		this.setPreferredSize(new Dimension(800, 600));
+		this.setPreferredSize(new Dimension(300, 130));
 		this.setResizable(false);
 		prikaziToolBar();
 		prikaziUnosDatuma();
@@ -50,7 +51,7 @@ public class AdministratorIzvestaji extends JFrame{
 	private void prikaziToolBar() {
 		JToolBar toolBar = new JToolBar();
 		JPanel panel = new JPanel();
-		Dimension d = new Dimension(150, 20);
+		Dimension d = new Dimension(70, 20);
 				
 		btnIzvestaj1.setPreferredSize(d);
 		btnIzvestaj2.setPreferredSize(d);
@@ -110,6 +111,9 @@ public class AdministratorIzvestaji extends JFrame{
 						HashMap<Zaposleni, Integer> sobaricaSoba = manageAll.getSobeManager().getBrojSobaPoSobarici(odDatum, doDatum);
 						//broj potvrdjenih rezervacija
 						int brojPotvrdjenih = manageAll.getRezervacijeManager().getBrojPotvrdjenih(odDatum, doDatum);
+						
+						AdministratorIzvestaj1 izv = new AdministratorIzvestaj1(prihodi, rashodi, brojPotvrdjenih, sobaricaSoba);
+						izv.setVisible(true);
 					}
 				}
 			}
@@ -144,6 +148,9 @@ public class AdministratorIzvestaji extends JFrame{
 						int otkazanih = manageAll.getRezervacijeManager().getBrojOtkazanih(odDatum, doDatum);
 						//broj obradjenih zahteva
 						int obradjenih = odbijenih + otkazanih + manageAll.getRezervacijeManager().getBrojPotvrdjenih(odDatum, doDatum);
+						
+						AdministratorIzvestaj2 izv = new AdministratorIzvestaj2(odbijenih, otkazanih, obradjenih);
+						izv.setVisible(true);
 					}
 				}
 			}
@@ -172,11 +179,10 @@ public class AdministratorIzvestaji extends JFrame{
 						JOptionPane.showMessageDialog(null, "Loš unos datuma.", "Greška", JOptionPane.ERROR_MESSAGE);
 					}
 					else {
-						//prikaz podataka o sobi, njenom tipu
+						HashMap <Sobe, Integer[]> sobe = manageAll.getRezervacijeManager().prikazSoba(odDatum, doDatum);
 						
-						//broj nocenja za svaku sobu
-						
-						//ukupni prihod sobe
+						AdministratorIzvestaj3 izv = new AdministratorIzvestaj3(sobe);
+						izv.setVisible(true);
 					}
 				}
 			}

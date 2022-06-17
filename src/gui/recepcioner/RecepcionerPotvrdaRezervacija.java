@@ -3,9 +3,15 @@ package gui.recepcioner;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,23 +20,32 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableRowSorter;
 
 import entity.Rezervacije;
 import gui.administrator.AdministratorPrikaziRezervaciju;
-import gui.models.RezervacijeModel;
+import gui.models.PotvrdaRezervacijeModel;
 import manage.ManageAll;
 
 public class RecepcionerPotvrdaRezervacija extends JFrame{
 	private static final long serialVersionUID = 1L;
 
-	ManageAll manageAll = ManageAll.getInstance();
-	JButton btnPotvrdi;
-	JButton btnOtkazi;
-	JButton btnShow;
-	JTable tabela;
+	private ManageAll manageAll = ManageAll.getInstance();
+	private JButton btnPotvrdi;
+	private JButton btnOtkazi;
+	private JButton btnShow;
+	private JTable tabela;
+	
+	private JTextField tfSearch = new JTextField(20);
+	private TableRowSorter<AbstractTableModel> tableSorter = new TableRowSorter<AbstractTableModel>();
 
 	RecepcionerPotvrdaRezervacija () {
 		this.setTitle("Potvrda rezervacija");
@@ -38,6 +53,7 @@ public class RecepcionerPotvrdaRezervacija extends JFrame{
 		this.setResizable(false);
 		prikaziDugmice();
 		prikaziTabelu();
+		prikaziPretragu();
 		this.pack();
 		this.setLocationRelativeTo(null);
 		allButtons();
@@ -65,7 +81,7 @@ public class RecepcionerPotvrdaRezervacija extends JFrame{
 	
 	private void prikaziTabelu() {
 		tabela = new JTable();
-		tabela.setModel(new RezervacijeModel(manageAll.getRezervacijeManager().getRezervacijeNaCekanju()));
+		tabela.setModel(new PotvrdaRezervacijeModel(manageAll.getRezervacijeManager().getRezervacijeNaCekanju()));
 		tabela.setShowGrid(true);
 		tabela.setGridColor(Color.GRAY);
 		tabela.setFont(tabela.getFont().deriveFont(14f));
@@ -75,6 +91,7 @@ public class RecepcionerPotvrdaRezervacija extends JFrame{
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 		tabela.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+		tabela.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
 		tabela.setDefaultEditor(Object.class, null);
 		JPanel panel = new JPanel(new GridLayout(1,1));
 		tabela.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -83,6 +100,52 @@ public class RecepcionerPotvrdaRezervacija extends JFrame{
 		JScrollPane srcPan = new JScrollPane(tabela);
 		panel.add(srcPan);
 		this.getContentPane().add(panel, BorderLayout.CENTER);
+	}
+	
+	public void prikaziPretragu() {
+		// podesavanje manuelnog sortera tabele, potrebno i za pretragu
+		tableSorter.setModel((AbstractTableModel) tabela.getModel());
+		tabela.setRowSorter(tableSorter);
+		tabela.getTableHeader().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				// preuzimanje indeksa kolone potrebnog za sortiranje
+				int index = tabela.getTableHeader().columnAtPoint(arg0.getPoint());
+				// call abstract sort method
+				sort(index);
+			}
+			
+		});
+		// podesavanje pretrage 
+		JPanel pSearch = new JPanel(new FlowLayout(FlowLayout.CENTER));		
+		pSearch.setBackground(Color.GRAY);
+		pSearch.add(new JLabel("Search:"));
+		pSearch.add(tfSearch);
+		
+		add(pSearch, BorderLayout.SOUTH);
+		
+		tfSearch.getDocument().addDocumentListener(new DocumentListener() {
+			
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				changedUpdate(e);
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				changedUpdate(e);
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				//System.out.println("~ "+tfSearch.getText());
+				if (tfSearch.getText().trim().length() == 0) {
+				     tableSorter.setRowFilter(null);
+				  } else {
+					  tableSorter.setRowFilter(RowFilter.regexFilter("(?i)" + tfSearch.getText().trim()));
+				  }
+			}
+		});
 	}
 	
 	private void allButtons() {
@@ -131,6 +194,53 @@ public class RecepcionerPotvrdaRezervacija extends JFrame{
 			}
 		});
 	}
+		
+	@SuppressWarnings("serial")
+	private Map<Integer, Integer> sortOrder = new HashMap<Integer, Integer>() {{put(0, 1);put(1, 1);put(2, 1);put(3, 1);put(4, 1);put(5,1);}};
+	
+	protected void sort(int index) {
+		// index of table column
+		manageAll.getRezervacijeManager().getRezervacijeNaCekanju().sort(new Comparator<Rezervacije>() {
+			int retVal = 0;
+			@Override
+			public int compare(Rezervacije o1, Rezervacije o2) {
+				switch (index) {
+				case 0:
+					retVal = ((Integer)o1.getId()).compareTo((Integer)o2.getId());
+					break;
+				case 1:
+					retVal = o1.getTipSobe().getTip().compareTo(o2.getTipSobe().getTip());
+					break;
+				case 2:
+					retVal = o1.getOdDatum().compareTo(o2.getOdDatum());
+					break;
+				case 3:
+					retVal = o1.getDoDatum().compareTo(o2.getDoDatum());
+					break;
+				case 4:
+					int cenaO1 = o1.getCena();
+					if (String.valueOf(o1.getStatus()).equals("ODBIJENA")) {
+						cenaO1 = 0;
+					}
+					int cenaO2 = o2.getCena();
+					if (String.valueOf(o2.getStatus()).equals("ODBIJENA")) {
+						cenaO2 = 0;
+					}
+					retVal = ((Integer)cenaO1).compareTo((Integer)cenaO2);
+					break;
+				case 5:
+					retVal = ((Integer)o1.getUsluge().size()).compareTo((Integer)o2.getUsluge().size());
+					break;
+				default:
+					break;
+				}
+				return retVal*sortOrder.get(index);
+			}
+		});
+		
+		sortOrder.put(index, sortOrder.get(index)*-1);
+		osveziTabelu();	
+	}
 	
 	private void areYouSure(int id, boolean potvrda) {
 		String[] option = new String[2];
@@ -168,9 +278,10 @@ public class RecepcionerPotvrdaRezervacija extends JFrame{
 	}
 	
 	private void osveziTabelu() {
-		tabela.setModel(new RezervacijeModel(manageAll.getRezervacijeManager().getRezervacijeNaCekanju()));
+		tabela.setModel(this.tabela.getModel());
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 		tabela.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+		tabela.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
 	}
 }
