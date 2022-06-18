@@ -134,10 +134,8 @@ public class AdministratorIzmenaRezervacije extends JFrame{
 							}
 							else {
 								try {
-									proslo = manageAll.getRezervacijeManager().edit(rezervacija.getId(), manageAll.getTipSobeManager().get_id(tipSobeText), lista_usluga, manageAll.getGostManager().get_id(korisnikText), datum_formatter.parse(datumOdText), datum_formatter.parse(datumDoText), statusText, null);
-									if (!statusText.equals("NA_CEKANJU")) {
-										manageAll.getRezervacijeManager().dodajDatumKraja(rezervacija);
-									}
+									proslo = manageAll.getRezervacijeManager().edit(rezervacija.getId(), manageAll.getTipSobeManager().get_id(tipSobeText), lista_usluga, manageAll.getGostManager().get_id(korisnikText), datum_formatter.parse(datumOdText), datum_formatter.parse(datumDoText), statusText, null);		
+									manageAll.getRezervacijeManager().dodajDatumKraja(rezervacija);
 								} catch (ParseException e1) {
 									// TODO Auto-generated catch block
 									e1.printStackTrace();

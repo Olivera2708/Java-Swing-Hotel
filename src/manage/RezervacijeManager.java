@@ -12,11 +12,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
 
 import javax.swing.JOptionPane;
 
+import enums.EnumMeseci;
 import enums.EnumStatusRezervacije;
 import enums.EnumStatusSobe;
 import entity.Gost;
@@ -72,9 +74,7 @@ public class RezervacijeManager {
 				}
 				Rezervacije rezervacije = new Rezervacije(Integer.parseInt(vrednosti[0]), tipSobeManager.find(Integer.parseInt(vrednosti[1])), lista_usluga, gostManager.find_name(vrednosti[3]), datum.parse(vrednosti[4]), datum.parse(vrednosti[5]), Integer.parseInt(vrednosti[6]), EnumStatusRezervacije.valueOf(vrednosti[7]), soba);
 				
-				if (!String.valueOf(rezervacije.getStatus()).equals("NA_CEKANJU")) {
-					this.ucitajDatumKraja(datum.parse(vrednosti[9]), rezervacije);
-				}
+				this.ucitajDatumKraja(datum.parse(vrednosti[9]), rezervacije);
 				this.rezervacijeLista.add(rezervacije);
 			}
 			br.close();
@@ -89,22 +89,18 @@ public class RezervacijeManager {
 	public void update() {
 		for (Rezervacije ir: rezervacijeLista) {
 			if (String.valueOf(ir.getStatus()).equals("NA_CEKANJU") && (ir.getOdDatum().before(new java.util.Date()) || ir.getOdDatum().equals(new java.util.Date()))) {
-				int[] lista_usluga = new int[ir.getUsluge().size()];
-				for (int i =0; i < ir.getUsluge().size(); i++) {
-					lista_usluga[i] = ir.getUsluge().get(i).getId();
-				}
-				
-				Sobe soba = null;
-				try {
-					soba = ir.getSoba();
-				}
-				catch (ArrayIndexOutOfBoundsException e) {
-				}
-				this.edit(ir.getId(), ir.getTipSobe().getId(), lista_usluga, ir.getGost().getId(), ir.getOdDatum(), ir.getDoDatum(), "ODBIJENA", soba);
+				this.editStatus(ir.getId(), "ODBIJENA");
 				this.dodajDatumKraja(ir);
 			}
 		}
 		saveData();
+	}
+	
+	public boolean editStatus(int id, String status) {
+		Rezervacije s = this.find(id);
+		s.setStatus(EnumStatusRezervacije.valueOf(status));
+		this.saveData();
+		return true;
 	}
 	
 	public void promeniSobe(int stari, int novi) {
@@ -225,6 +221,30 @@ public class RezervacijeManager {
 			}
 		}
 		return prihodi;
+	}
+	
+	public HashMap<String, Integer> prikazPoTipu(Date datumOd, Date datumDo){
+		HashMap<String, Integer> mapa = new HashMap<String, Integer>();
+		
+		mapa.put("Potvrdjena", this.getBrojPotvrdjenih(datumOd, datumDo));
+		mapa.put("Otkazana", this.getBrojOtkazanih(datumOd, datumDo));
+		mapa.put("Odbijena", this.getBrojOdbijenih(datumOd, datumDo));
+		mapa.put("Na čekanju", this.getBrojNaCekanju(datumOd, datumDo));
+		
+		return mapa;
+	}
+	
+	public int getBrojNaCekanju(Date datumOd, Date datumDo){
+		int brojac = 0;
+		for (Rezervacije r: rezervacijeLista) {
+			if (String.valueOf(r.getStatus()).equals("NA_CEKANJU")) {
+				SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
+				if (datum.format(r.getKonacanDatum()).equals(datum.format(datumDo)) || datum.format(r.getKonacanDatum()).equals(datum.format(datumOd)) || (datumOd.before(r.getKonacanDatum()) && datumDo.after(r.getKonacanDatum()))) {
+					brojac ++;
+				}
+			}
+		}
+		return brojac;
 	}
 	
 	public int getBrojPotvrdjenih(Date datumOd, Date datumDo){
@@ -422,6 +442,79 @@ public class RezervacijeManager {
 		return cena;
 	}
 	
+	public HashMap<TipSobe, LinkedHashMap<EnumMeseci, Integer>> getPrihodiPoTipu(){
+		//[TipSobe, Mesec, Prihod]
+		HashMap<TipSobe, LinkedHashMap<EnumMeseci, Integer>> map = new HashMap<TipSobe, LinkedHashMap<EnumMeseci, Integer>>();
+		
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.YEAR, -1);
+		Date datumOd = cal.getTime();
+		int mesec = cal.get(Calendar.MONTH) + 2;
+		
+		for (TipSobe ts: tipSobeManager.getAll()) {
+			LinkedHashMap<EnumMeseci, Integer> unutra = new LinkedHashMap<EnumMeseci, Integer>();
+			for (int i = mesec; i < mesec+12; i++) {
+				if (i < 13) {
+					unutra.put(EnumMeseci.Int(i), 0);
+				}
+				else {
+					unutra.put(EnumMeseci.Int(i-12), 0);
+				}
+			}
+			map.put(ts, unutra);
+		}
+		
+		for (Rezervacije r: rezervacijeLista) {
+			if (r.getKonacanDatum().after(datumOd) && !r.getStatus().equals(EnumStatusRezervacije.NA_CEKANJU) && !r.getStatus().equals(EnumStatusRezervacije.ODBIJENA)) {
+				Calendar cal1 = Calendar.getInstance();
+				cal1.setTime(r.getKonacanDatum());
+				mesec = cal1.get(Calendar.MONTH) + 1;
+				
+				LinkedHashMap<EnumMeseci, Integer> unutra1 = map.get(r.getTipSobe());
+				unutra1.put(EnumMeseci.Int(mesec), unutra1.get(EnumMeseci.Int(mesec)) + r.getCena());	
+				map.put(r.getTipSobe(), unutra1);
+			}
+		}
+		
+		return map;
+	}
+	
+	public LinkedHashMap<EnumMeseci, Integer> getUkupno() {
+		LinkedHashMap<EnumMeseci, Integer> map = new LinkedHashMap<EnumMeseci, Integer>();
+		
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.YEAR, -1);
+		int mesec = cal.get(Calendar.MONTH) + 2;
+		
+		for (int i = mesec; i < mesec+12; i++) {
+			if (i < 13) {
+				map.put(EnumMeseci.Int(i), 0);
+			}
+			else {
+				map.put(EnumMeseci.Int(i-12), 0);
+			}
+		}
+		for (int i = mesec; i < mesec+12; i++) {
+			if (i < 13) {
+				map.put(EnumMeseci.Int(i), 0);
+			}
+			else {
+				map.put(EnumMeseci.Int(i-12), 0);
+			}
+		}
+		
+		HashMap<TipSobe, LinkedHashMap<EnumMeseci, Integer>> odvojeno = this.getPrihodiPoTipu();
+		
+		for (TipSobe ts: tipSobeManager.getAll()) {
+			LinkedHashMap<EnumMeseci, Integer> unutra1 = odvojeno.get(ts);
+			for (EnumMeseci m: unutra1.keySet()) {
+				map.put(m, map.get(m) + unutra1.get(m));
+			}
+		}
+		return map;
+		
+	}
+
 	public int brojSlobodnihSoba(int id_tipaSobe, Date datumOd, Date datumDo, String[] sadrzaji) {
 		//predbroj koliko ima izabranog tipa soba
 		int ukupnoSaSadrzajem = 0;
@@ -459,11 +552,9 @@ public class RezervacijeManager {
 				}
 			}
 		}
-		//izbrojala ukupan broj soba tog tipa koje sadrze sve sadrzaje
-		
 		int zauzete = 0;
 		for (Rezervacije s: rezervacijeLista) {
-			if (s.getTipSobe().getId() == id_tipaSobe && (String.valueOf(s.getStatus()).equals("NA_CEKANJU") || String.valueOf(s.getStatus()).equals("POTVRDJENA"))) {
+			if (s.getTipSobe().getId() == id_tipaSobe &&  String.valueOf(s.getStatus()).equals("POTVRDJENA")) {
 				if ((s.getOdDatum().before(datumDo) && s.getDoDatum().after(datumOd))
 						|| (s.getDoDatum().before(datumDo) && s.getDoDatum().after(datumOd))
 						|| s.getDoDatum().equals(datumOd) || s.getOdDatum().equals(datumDo)) {
@@ -472,6 +563,7 @@ public class RezervacijeManager {
 			}
 			
 		}
+		System.out.println(ukupno + "  " + zauzete + "  " + ukupnoSaSadrzajem);
 		if (ukupno - zauzete != 0 && ukupnoSaSadrzajem > 0) {
 			return 1;
 		}
@@ -550,7 +642,9 @@ public class RezervacijeManager {
 		if (cena == -1) {
 			return false;
 		}
-		this.rezervacijeLista.add(new Rezervacije(id, tipSobeManager.find(tipSobe), lista_usluga, gostManager.find(gost), odDatum, doDatum, cena, EnumStatusRezervacije.valueOf(status), null));
+		Rezervacije rezervacija = new Rezervacije(id, tipSobeManager.find(tipSobe), lista_usluga, gostManager.find(gost), odDatum, doDatum, cena, EnumStatusRezervacije.valueOf(status), null);
+		this.rezervacijeLista.add(rezervacija);
+		this.dodajDatumKraja(rezervacija);
 		this.saveData();
 		return true;
 	}

@@ -32,9 +32,6 @@ public class PieChart30Dana implements MainChart<PieChart>{
 		}
 		
 		PieChart chart = new PieChartBuilder().width(800).height(600).title(title).build();
-		
-//		Color[] sliceColors = new Color[] { new Color(224, 68, 14), new Color(230, 105, 62), new Color(236, 143, 110), new Color(243, 180, 159), new Color(246, 199, 182) };
-//	    chart.getStyler().setSeriesColors(sliceColors);
 	    
 	    Date danas = new Date();
 	    Date pocetni = new Date(danas.getTime() - 30 * (1000 * 60 * 60 * 24));
@@ -46,7 +43,10 @@ public class PieChart30Dana implements MainChart<PieChart>{
 		    }
 	    }
 	    else {
-	    	
+	    	HashMap<String, Integer> maps = rezervacijeManager.prikazPoTipu(pocetni, danas);
+	    	for (String s: maps.keySet()) {
+		    	chart.addSeries(s, maps.get(s));
+		    }
 	    }
 	    
 	    return chart;

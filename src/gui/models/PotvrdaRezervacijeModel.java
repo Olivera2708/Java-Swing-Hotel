@@ -52,6 +52,9 @@ public class PotvrdaRezervacijeModel extends AbstractTableModel {
 			return z.getCena();
 		case 5:
 			String usluge = "";
+			if (z.getUsluge().isEmpty()) {
+				return usluge;
+			}
 			for (Usluge u: z.getUsluge()) {
 				usluge += u.getTip() + ", ";
 			}

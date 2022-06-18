@@ -159,7 +159,7 @@ public class AdministratorFrame extends JFrame {
 		btnChart.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				AdministratorChart chart = new AdministratorChart();
+				AdministratorIzaberiChart chart = new AdministratorIzaberiChart();
 				chart.setVisible(true);
 			}
 		});

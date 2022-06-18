@@ -140,10 +140,7 @@ public class Rezervacije {
 		if (soba != null) {
 			brojSobe = String.valueOf(soba.getBrojSobe());
 		}
-		String kDatum = "";
-		if (konacanDatum != null) {
-			kDatum = datum_formatter.format(konacanDatum);
-		}
+		String kDatum = datum_formatter.format(konacanDatum);
 		return id+";"+tipSobe.getId()+";"+us+";"+gost.getKorisnickoIme()+";"+od_datum_string+";"+do_datum_string+";"+cena+";"+status+";"+brojSobe+";"+kDatum;
 	}
 }
