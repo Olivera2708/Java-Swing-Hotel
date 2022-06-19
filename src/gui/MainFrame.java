@@ -96,24 +96,17 @@ public class MainFrame extends JFrame{
 	}
 	
 	private void checkIfUser(String ime, String loz) {
-		boolean found = false;
-		for (Gost g: manageAll.getGostManager().getAll()) {
-			if (ime.equals(g.getKorisnickoIme()) && loz.equals(g.getLozinka())) {
-				found = true;
-				this.setVisible(false);
-				this.dispose();
-				GostFrame gostFrame = new GostFrame(g);
-				gostFrame.setVisible(true);
-			}
+		Gost g = manageAll.getGostManager().LogIn(ime, loz);
+		if (g != null) {
+			this.setVisible(false);
+			this.dispose();
+			GostFrame gostFrame = new GostFrame(g);
+			gostFrame.setVisible(true);
 		}
-		for (Zaposleni z: manageAll.getZaposleniManager().getAll()) {
-			if (ime.equals(z.getKorisnickoIme()) && loz.equals(z.getLozinka())) {
-				found = true;
-				this.setVisible(false);
-				this.dispose();
-				
-				String pozicija = z.getPozicija();
-				switch(pozicija) {
+		else {
+			Zaposleni z = manageAll.getZaposleniManager().LogIn(ime, loz);
+			if (z != null) {
+				switch(z.getPozicija()) {
 				case "Recepcioner":
 					RecepcionerFrame recepcionerFrame = new RecepcionerFrame(z);
 					recepcionerFrame.setVisible(true);
@@ -125,11 +118,11 @@ public class MainFrame extends JFrame{
 				case "Sobarica":
 					SobaricaFrame sobaricaFrame = new SobaricaFrame(z);
 					sobaricaFrame.setVisible(true);
-				}	
+				}
 			}
-		}
-		if (!found){
-			JOptionPane.showMessageDialog(null, "Ne postoji korisnik sa ovim koricničkim imenom i lozinkom", "Greška", JOptionPane.ERROR_MESSAGE);
+			else {
+				JOptionPane.showMessageDialog(null, "Ne postoji korisnik sa ovim koricničkim imenom i lozinkom", "Greška", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	}
 	

@@ -49,6 +49,15 @@ public class GostManager {
 		return false;
 	}
 	
+	public Gost LogIn(String ime, String loz) {
+		for (Gost g: gostLista) {
+			if (ime.equals(g.getKorisnickoIme()) && loz.equals(g.getLozinka())) {
+				return g;
+			}
+		}
+		return null;
+	}
+	
 	
 	//lista svih gostiju
 	public List<Gost> getAll(){
@@ -66,17 +75,17 @@ public class GostManager {
 	
 	//cuvanje podataka iz objekta nazad u csv
 	public boolean saveData() {
-		PrintWriter pw = null;
-		try {
-			pw = new PrintWriter(new FileWriter("data/gosti.csv", false));
-			for (Gost z : gostLista) {
-				pw.println(z.toFileString());
-			}
-			pw.close();
-		}
-		catch (IOException e) {
-			return false;
-		}
+//		PrintWriter pw = null;
+//		try {
+//			pw = new PrintWriter(new FileWriter("data/gosti.csv", false));
+//			for (Gost z : gostLista) {
+//				pw.println(z.toFileString());
+//			}
+//			pw.close();
+//		}
+//		catch (IOException e) {
+//			return false;
+//		}
 		return true;
 	}
 	

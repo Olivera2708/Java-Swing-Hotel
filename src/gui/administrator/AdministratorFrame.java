@@ -1,6 +1,5 @@
 package gui.administrator;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -14,7 +13,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import chart.PieChart30Dana;
 import entity.Zaposleni;
 import manage.ManageAll;
 import net.miginfocom.swing.MigLayout;

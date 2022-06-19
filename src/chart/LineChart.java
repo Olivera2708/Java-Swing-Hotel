@@ -33,7 +33,6 @@ public class LineChart implements MainChart<XYChart>{
 	    LinkedHashMap<EnumMeseci, Integer> ukupno = rezervacijeManager.getUkupno();
 	    
 	    Calendar cal123 = Calendar.getInstance();
-		Date datumi = cal123.getTime();
 		int danas_mesec = cal123.get(Calendar.MONTH) + 1;
 		int danas_godina = cal123.get(Calendar.YEAR);
 	    

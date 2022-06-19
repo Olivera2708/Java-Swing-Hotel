@@ -54,6 +54,15 @@ public class ZaposleniManager {
 		return this.zaposleniLista;
 	}
 	
+	public Zaposleni LogIn(String ime, String loz) {
+		for (Zaposleni z: zaposleniLista) {
+			if (ime.equals(z.getKorisnickoIme()) && loz.equals(z.getLozinka())) {
+				return z;
+			}
+		}
+		return null;
+	}
+	
 	public int brojSpremacica() {
 		int brojac = 0;
 		for (Zaposleni z: zaposleniLista) {
@@ -75,19 +84,19 @@ public class ZaposleniManager {
 		return podaci;
 	}
 	
-	//cuvanje podataka iz objekta nazad u csv
+	//cuvanje podataka iz objekta nazad u csv, zakomentarisano zbog testiranja
 	public boolean saveData() {
-		PrintWriter pw = null;
-		try {
-			pw = new PrintWriter(new FileWriter("data/zaposleni.csv", false));
-			for (Zaposleni z : this.zaposleniLista) {
-				pw.println(z.toFileString());
-			}
-			pw.close();
-		}
-		catch (IOException e) {
-			return false;
-		}
+//		PrintWriter pw = null;
+//		try {
+//			pw = new PrintWriter(new FileWriter("data/zaposleni.csv", false));
+//			for (Zaposleni z : this.zaposleniLista) {
+//				pw.println(z.toFileString());
+//			}
+//			pw.close();
+//		}
+//		catch (IOException e) {
+//			return false;
+//		}
 		return true;
 	}
 	
@@ -103,15 +112,15 @@ public class ZaposleniManager {
 	}
 	
 	//pronadji zaposlenog po id
-		private int find_index(int id) {
-			for (int i = 0; i < this.zaposleniLista.size(); i++) {
-				Zaposleni z = this.zaposleniLista.get(i);
-				if (z.getId() == id) {
-					return i;
-				}
+	private int find_index(int id) {
+		for (int i = 0; i < this.zaposleniLista.size(); i++) {
+			Zaposleni z = this.zaposleniLista.get(i);
+			if (z.getId() == id) {
+				return i;
 			}
-			return -1;
 		}
+		return -1;
+	}
 	
 	//dodaj novog zaposlenog
 	public void add(String ime, String prezime, String pol, Date datum, String telefon, String adresa, String korisnickoIme, String lozinka, int strucnaSprema, int staz, String pozicija) {
