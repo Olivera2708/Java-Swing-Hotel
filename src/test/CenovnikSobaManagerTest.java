@@ -2,7 +2,6 @@ package test;
 
 import static org.junit.Assert.*;
 
-import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -45,13 +44,23 @@ public class CenovnikSobaManagerTest {
 	
 	@Test
 	public void testFind() {
+		CenaSobe cs = manageAll.getCenovnikSobaManager().getAll().get(0);
+		CenaSobe test = manageAll.getCenovnikSobaManager().find(cs.getId());
+		assertTrue(cs == test);
 	}
 	
 	@Test
 	public void testRemove() {
+		CenaSobe cs = manageAll.getCenovnikSobaManager().getAll().get(0);
+		manageAll.getCenovnikSobaManager().remove(0);
+		CenaSobe test = manageAll.getCenovnikSobaManager().find(cs.getId());
+		assertTrue(test == null);
 	}
 	
 	@Test
 	public void testEdit() {
+		CenaSobe cs = manageAll.getCenovnikSobaManager().getAll().get(1);
+		manageAll.getCenovnikSobaManager().edit(cs.getId(), cs.getTipSobe().getId(), 1500, cs.getOdDatum(), cs.getDoDatum());
+		assertTrue(cs.getCena() == 1500);
 	}
 }

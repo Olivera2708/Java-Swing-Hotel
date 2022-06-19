@@ -2,7 +2,7 @@ package test;
 
 import static org.junit.Assert.*;
 
-import java.sql.Date;
+import java.text.SimpleDateFormat;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -13,14 +13,15 @@ import manage.ManageAll;
 
 public class ZaposleniManagerTest {
 	public static ManageAll manageAll = ManageAll.getInstance();
+	static SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		System.out.println("Zaposleni test start");
 		
-		manageAll.getZaposleniManager().add("Recep", "Recepic", "Muško", new Date(1999-12-15), "06437825798", "Bate Brkica 23, Novi Sad", "recep", "recep123", 5, 4, "Recepcioner");
-		manageAll.getZaposleniManager().add("Sobarka", "Sobric", "Žensko", new Date(1989-10-25), "06437255798", "Dusana Danilovica 27, Novi Sad", "sobarka", "sobarka123", 4, 15, "Sobarica");
-		manageAll.getZaposleniManager().add("Admin", "Adminic", "Muško", new Date(1995-11-9), "0123782578", "Kneza Milosa 17, Novi Sad", "admin", "admin123", 7, 4, "Admin");
+		manageAll.getZaposleniManager().add("Recep", "Recepic", "Muško", datum.parse("1999-12-15"), "06437825798", "Bate Brkica 23, Novi Sad", "recep", "recep123", 5, 4, "Recepcioner");
+		manageAll.getZaposleniManager().add("Sobarka", "Sobric", "Žensko", datum.parse("1989-10-25"), "06437255798", "Dusana Danilovica 27, Novi Sad", "sobarka", "sobarka123", 4, 15, "Sobarica");
+		manageAll.getZaposleniManager().add("Admin", "Adminic", "Muško", datum.parse("1995-11-9"), "0123782578", "Kneza Milosa 17, Novi Sad", "admin", "admin123", 7, 4, "Admin");
 	}
 	
 	@AfterClass
