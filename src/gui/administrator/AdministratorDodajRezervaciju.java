@@ -120,7 +120,7 @@ public class AdministratorDodajRezervaciju extends JFrame{
 							}
 							else {
 								try {
-									proslo = manageAll.getRezervacijeManager().add(manageAll.getTipSobeManager().get_id(tipSobeText), lista_usluga, manageAll.getGostManager().get_id(korisnikText), datum_formatter.parse(datumOdText), datum_formatter.parse(datumDoText), statusText);
+									proslo = manageAll.getRezervacijeManager().add(manageAll.getTipSobeManager().get_id(tipSobeText), lista_usluga, manageAll.getGostManager().get_id(korisnikText), datum_formatter.parse(datumOdText), datum_formatter.parse(datumDoText), statusText, null);
 								} catch (ParseException e1) {
 									// TODO Auto-generated catch block
 									e1.printStackTrace();

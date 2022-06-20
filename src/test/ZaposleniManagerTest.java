@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import org.junit.AfterClass;
@@ -45,11 +46,24 @@ public class ZaposleniManagerTest {
 	}
 	
 	@Test
+	public void testAdd() throws ParseException {
+		manageAll.getZaposleniManager().add("Adminko", "Adminkic", "Muško", datum.parse("1990-11-9"), "0123819378", "Kneza Milosa 27, Novi Sad", "admin123", "admin123123", 7, 10, "Admin");
+		int sve = manageAll.getZaposleniManager().getAll().size();
+		assertTrue(sve == 4);
+	}
+	
+	@Test
+	public void getAll() {
+		int test = manageAll.getZaposleniManager().getAll().size();
+		assertTrue(test == 4);
+	}
+	
+	@Test
 	public void testVecPosotjiKorisnickoIme() {
 		boolean test = manageAll.getZaposleniManager().vecPostojiKorisnicko("admin");
 		assertTrue(test == true);
 		
-		test = manageAll.getZaposleniManager().vecPostojiKorisnicko("admin123");
+		test = manageAll.getZaposleniManager().vecPostojiKorisnicko("admin12345");
 		assertTrue(test != true);
 	}
 	

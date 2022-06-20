@@ -51,18 +51,19 @@ public class UslugeManager {
 		}
 	
 	//cuvanje podataka iz objekta nazad u csv
+	//za potrebe testiranja komentarisati save
 	public boolean saveData() {
-//		PrintWriter pw = null;
-//		try {
-//			pw = new PrintWriter(new FileWriter("data/tipsoba.csv", false));
-//			for (Usluge s : uslugeLista) {
-//				pw.println(s.toFileString());
-//			}
-//			pw.close();
-//		}
-//		catch (IOException e) {
-//			return false;
-//		}
+		PrintWriter pw = null;
+		try {
+			pw = new PrintWriter(new FileWriter("data/tipsoba.csv", false));
+			for (Usluge s : uslugeLista) {
+				pw.println(s.toFileString());
+			}
+			pw.close();
+		}
+		catch (IOException e) {
+			return false;
+		}
 		return true;
 	}
 	

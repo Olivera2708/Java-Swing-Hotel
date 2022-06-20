@@ -50,18 +50,19 @@ public class CenovnikSobaManager {
 	}
 
 	//cuvanje podataka iz objekta nazad u csv
+	//za potrebe testiranja komentarisati save
 	public boolean saveData() {
-//		PrintWriter pw = null;
-//		try {
-//			pw = new PrintWriter(new FileWriter("data/cenovnik.csv", false));
-//			for (CenaSobe s : cenovnikSobaLista) {
-//				pw.println(s.toFileString());
-//			}
-//			pw.close();
-//		}
-//		catch (IOException e) {
-//			return false;
-//		}
+		PrintWriter pw = null;
+		try {
+			pw = new PrintWriter(new FileWriter("data/cenovnik.csv", false));
+			for (CenaSobe s : cenovnikSobaLista) {
+				pw.println(s.toFileString());
+			}
+			pw.close();
+		}
+		catch (IOException e) {
+			return false;
+		}
 		return true;
 	}
 	

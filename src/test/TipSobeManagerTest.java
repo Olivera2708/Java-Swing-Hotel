@@ -28,6 +28,19 @@ public class TipSobeManagerTest {
 	}
 	
 	@Test
+	public void testAdd() throws ParseException {
+		manageAll.getTipSobeManager().add("trokrevetna");
+		int sve = manageAll.getTipSobeManager().getAll().size();
+		assertTrue(sve == 3);
+	}
+	
+	@Test
+	public void getAll() {
+		int test = manageAll.getTipSobeManager().getAll().size();
+		assertTrue(test == 3);
+	}
+	
+	@Test
 	public void testGetNames() throws ParseException {
 		String[] test = manageAll.getTipSobeManager().getNames();
 		String[] tacno = {"jednokrevetna", "dvokrevetna"};

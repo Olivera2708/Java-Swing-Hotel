@@ -254,7 +254,7 @@ public class RecepcionerPotvrdaRezervacija extends JFrame{
 			lista_usluga[i] = ir.getUsluge().get(i).getId();
 		}
 		//provara jel ima slobodnih soba
-		if (manageAll.getRezervacijeManager().brojSlobodnihSoba(ir.getTipSobe().getId(), ir.getOdDatum(), ir.getDoDatum(), null) == 0) {
+		if (manageAll.getRezervacijeManager().brojSlobodnihSoba(ir.getTipSobe().getId(), ir.getOdDatum(), ir.getDoDatum(), ir.getSadrzaj()) == 0) {
 			JOptionPane.showMessageDialog(null, "Ne postoji slobodna soba za ovaj period.", "Greška", JOptionPane.WARNING_MESSAGE);
 		}
 		else {

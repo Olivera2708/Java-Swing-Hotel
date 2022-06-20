@@ -45,7 +45,11 @@ public class RecepcionerDodelaSobe extends JFrame{
 		this.tabela = tabela;
 		this.rezervacija = r;
 		
-		Integer[] opcije_tip = manageAll.getSobeManager().getSlobodneSobe(rezervacija.getTipSobe().getId()).toArray(new Integer[0]); // koje su slobodne
+		Integer[] opcije_tip = manageAll.getSobeManager().getSlobodneSobe(rezervacija.getTipSobe().getId(), rezervacija.getSadrzaj()).toArray(new Integer[0]); // koje su slobodne
+		if (opcije_tip.length == 0) {
+			JOptionPane.showMessageDialog(null, "Nema soba koje zadovoljavaju sve kriterijume, nude se sobe slične sobe.", "Upozorenje", JOptionPane.INFORMATION_MESSAGE);
+			opcije_tip = manageAll.getSobeManager().getSlobodneSobeSlicne(rezervacija.getTipSobe().getId()).toArray(new Integer[0]);
+		}
 		sobe = new JComboBox<>(opcije_tip);
 		
 		usluge.setSelectionMode(

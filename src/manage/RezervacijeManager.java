@@ -72,7 +72,13 @@ public class RezervacijeManager {
 						soba = sobeManager.find(brojSobe);
 					}
 				}
-				Rezervacije rezervacije = new Rezervacije(Integer.parseInt(vrednosti[0]), tipSobeManager.find(Integer.parseInt(vrednosti[1])), lista_usluga, gostManager.find_name(vrednosti[3]), datum.parse(vrednosti[4]), datum.parse(vrednosti[5]), Integer.parseInt(vrednosti[6]), EnumStatusRezervacije.valueOf(vrednosti[7]), soba);
+				String[] sadrzaji = null;
+				try {
+					sadrzaji = vrednosti[10].split(",");
+				}
+				catch (ArrayIndexOutOfBoundsException e) {
+				}
+				Rezervacije rezervacije = new Rezervacije(Integer.parseInt(vrednosti[0]), tipSobeManager.find(Integer.parseInt(vrednosti[1])), lista_usluga, gostManager.find_name(vrednosti[3]), datum.parse(vrednosti[4]), datum.parse(vrednosti[5]), Integer.parseInt(vrednosti[6]), EnumStatusRezervacije.valueOf(vrednosti[7]), soba, sadrzaji);
 				
 				this.ucitajDatumKraja(datum.parse(vrednosti[9]), rezervacije);
 				this.rezervacijeLista.add(rezervacije);
@@ -83,6 +89,23 @@ public class RezervacijeManager {
 			return false;
 		}
 		update();
+		return true;
+	}
+	
+	//cuvanje podataka iz objekta nazad u csv
+	//za potrebe testiranja komentarisati save
+	public boolean saveData() {
+		PrintWriter pw = null;
+		try {
+			pw = new PrintWriter(new FileWriter("data/rezervacije.csv", false));
+			for (Rezervacije s : rezervacijeLista) {
+				pw.println(s.toFileString());
+			}
+			pw.close();
+		}
+		catch (IOException e) {
+			return false;
+		}
 		return true;
 	}
 	
@@ -286,6 +309,7 @@ public class RezervacijeManager {
 		return brojac;
 	}
 	
+	//za izvestaje
 	public HashMap<Sobe, Integer[]> prikazSoba(Date datumOd, Date datumDo){
 		HashMap<Sobe, Integer[]> mapa = new HashMap<Sobe, Integer[]>();
 		for (Rezervacije r: rezervacijeLista) {
@@ -358,22 +382,6 @@ public class RezervacijeManager {
 		return rashodi * meseci;
 	}
 	
-	//cuvanje podataka iz objekta nazad u csv
-	public boolean saveData() {
-		PrintWriter pw = null;
-		try {
-			pw = new PrintWriter(new FileWriter("data/rezervacije.csv", false));
-			for (Rezervacije s : rezervacijeLista) {
-				pw.println(s.toFileString());
-			}
-			pw.close();
-		}
-		catch (IOException e) {
-			return false;
-		}
-		return true;
-	}
-	
 	//pronadji rezervaciju po id
 	public Rezervacije find(int id) {
 		for (int i = 0; i < rezervacijeLista.size(); i++) {
@@ -442,6 +450,7 @@ public class RezervacijeManager {
 		return cena;
 	}
 	
+	//za chart
 	public HashMap<TipSobe, LinkedHashMap<EnumMeseci, Integer>> getPrihodiPoTipu(){
 		//[TipSobe, Mesec, Prihod]
 		HashMap<TipSobe, LinkedHashMap<EnumMeseci, Integer>> map = new HashMap<TipSobe, LinkedHashMap<EnumMeseci, Integer>>();
@@ -479,6 +488,7 @@ public class RezervacijeManager {
 		return map;
 	}
 	
+	//za chart
 	public LinkedHashMap<EnumMeseci, Integer> getUkupno() {
 		LinkedHashMap<EnumMeseci, Integer> map = new LinkedHashMap<EnumMeseci, Integer>();
 		
@@ -563,7 +573,6 @@ public class RezervacijeManager {
 			}
 			
 		}
-		System.out.println(ukupno + "  " + zauzete + "  " + ukupnoSaSadrzajem);
 		if (ukupno - zauzete != 0 && ukupnoSaSadrzajem > 0) {
 			return 1;
 		}
@@ -628,7 +637,7 @@ public class RezervacijeManager {
 	}
 	
 	//izmeni rezervaciju
-	public boolean add(int tipSobe, int[] usluge, int gost, Date odDatum, Date doDatum, String status) {
+	public boolean add(int tipSobe, int[] usluge, int gost, Date odDatum, Date doDatum, String status, String[] sadrzaji) {
 		Random random = new Random();
 		int id = random.nextInt(8998) + 1001;
 		while (find(id) != null) {
@@ -642,7 +651,7 @@ public class RezervacijeManager {
 		if (cena == -1) {
 			return false;
 		}
-		Rezervacije rezervacija = new Rezervacije(id, tipSobeManager.find(tipSobe), lista_usluga, gostManager.find(gost), odDatum, doDatum, cena, EnumStatusRezervacije.valueOf(status), null);
+		Rezervacije rezervacija = new Rezervacije(id, tipSobeManager.find(tipSobe), lista_usluga, gostManager.find(gost), odDatum, doDatum, cena, EnumStatusRezervacije.valueOf(status), null, sadrzaji);
 		this.rezervacijeLista.add(rezervacija);
 		this.dodajDatumKraja(rezervacija);
 		this.saveData();

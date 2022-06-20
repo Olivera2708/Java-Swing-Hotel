@@ -18,8 +18,8 @@ public class UslugeManagerTest {
 	public static void setUpBeforeClass() throws Exception {
 		System.out.println("Usluge test start");
 		
-		manageAll.getUslugeManager().add("dorucak");
-		manageAll.getUslugeManager().add("rucak");
+		manageAll.getUslugeManager().add("uzina");
+		manageAll.getUslugeManager().add("predjelo");
 	}
 	
 	@AfterClass
@@ -28,9 +28,22 @@ public class UslugeManagerTest {
 	}
 	
 	@Test
+	public void testAdd() throws ParseException {
+		manageAll.getUslugeManager().add("pice");
+		int sve = manageAll.getUslugeManager().getAll().size();
+		assertTrue(sve == 3);
+	}
+	
+	@Test
+	public void getAll() {
+		int test = manageAll.getUslugeManager().getAll().size();
+		assertTrue(test == 3);
+	}
+	
+	@Test
 	public void testGetNames() throws ParseException {
 		String[] test = manageAll.getUslugeManager().getNames();
-		String[] tacno = {"dorucak", "rucak"};
+		String[] tacno = {"uzina", "predjelo"};
 		assertArrayEquals(test, tacno);
 	}
 	
@@ -44,7 +57,7 @@ public class UslugeManagerTest {
 	@Test
 	public void testGetId() {
 		String opis = manageAll.getUslugeManager().getAll().get(0).getTip();
-		assertEquals(opis, "dorucak");
+		assertEquals(opis, "uzina");
 	}
 	
 	@Test
@@ -58,7 +71,7 @@ public class UslugeManagerTest {
 	@Test
 	public void testEdit() {
 		Usluge cu = manageAll.getUslugeManager().getAll().get(1);
-		manageAll.getUslugeManager().edit(cu.getId(), "vecera");
-		assertEquals(cu.getTip(), "vecera");
+		manageAll.getUslugeManager().edit(cu.getId(), "pice");
+		assertEquals(cu.getTip(), "pice");
 	}
 }

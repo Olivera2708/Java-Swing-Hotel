@@ -17,8 +17,9 @@ public class Rezervacije {
 	private Date konacanDatum;
 	private int cena;
 	private EnumStatusRezervacije status;
-	
-	public Rezervacije(int id, TipSobe tipSobe, List<Usluge> usluge, Gost gost, Date odDatum, Date doDatum, int cena, EnumStatusRezervacije status, Sobe soba) {
+	private String[] sadrzaj;
+
+	public Rezervacije(int id, TipSobe tipSobe, List<Usluge> usluge, Gost gost, Date odDatum, Date doDatum, int cena, EnumStatusRezervacije status, Sobe soba, String[] sadrzaj) {
 		this.id = id;
 		this.tipSobe = tipSobe;
 		this.usluge = usluge;
@@ -29,6 +30,15 @@ public class Rezervacije {
 		this.status = status;
 		this.soba = soba;
 		this.konacanDatum = null;
+		this.sadrzaj = sadrzaj;
+	}
+	
+	public String[] getSadrzaj() {
+		return sadrzaj;
+	}
+
+	public void setSadrzaj(String[] sadrzaj) {
+		this.sadrzaj = sadrzaj;
 	}
 	
 	public Date getKonacanDatum() {
@@ -136,11 +146,19 @@ public class Rezervacije {
 			us = us.substring(0, us.length()-1);
 		}
 		
+		String sadrzaji = "";
+		if (sadrzaj != null) {
+			for (String s: sadrzaj) {
+				sadrzaji += s + ",";
+			}
+			sadrzaji = sadrzaji.substring(0, sadrzaji.length()-1);
+		}
+		
 		String brojSobe = "";
 		if (soba != null) {
 			brojSobe = String.valueOf(soba.getBrojSobe());
 		}
 		String kDatum = datum_formatter.format(konacanDatum);
-		return id+";"+tipSobe.getId()+";"+us+";"+gost.getKorisnickoIme()+";"+od_datum_string+";"+do_datum_string+";"+cena+";"+status+";"+brojSobe+";"+kDatum;
+		return id+";"+tipSobe.getId()+";"+us+";"+gost.getKorisnickoIme()+";"+od_datum_string+";"+do_datum_string+";"+cena+";"+status+";"+brojSobe+";"+kDatum+";"+sadrzaji;
 	}
 }

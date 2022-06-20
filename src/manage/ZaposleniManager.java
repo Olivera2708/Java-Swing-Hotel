@@ -85,18 +85,19 @@ public class ZaposleniManager {
 	}
 	
 	//cuvanje podataka iz objekta nazad u csv, zakomentarisano zbog testiranja
+	//za potrebe testiranja komentarisati save
 	public boolean saveData() {
-//		PrintWriter pw = null;
-//		try {
-//			pw = new PrintWriter(new FileWriter("data/zaposleni.csv", false));
-//			for (Zaposleni z : this.zaposleniLista) {
-//				pw.println(z.toFileString());
-//			}
-//			pw.close();
-//		}
-//		catch (IOException e) {
-//			return false;
-//		}
+		PrintWriter pw = null;
+		try {
+			pw = new PrintWriter(new FileWriter("data/zaposleni.csv", false));
+			for (Zaposleni z : this.zaposleniLista) {
+				pw.println(z.toFileString());
+			}
+			pw.close();
+		}
+		catch (IOException e) {
+			return false;
+		}
 		return true;
 	}
 	

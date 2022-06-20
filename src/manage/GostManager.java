@@ -74,18 +74,19 @@ public class GostManager {
 		}
 	
 	//cuvanje podataka iz objekta nazad u csv
+	//za potrebe testiranja komentarisati save
 	public boolean saveData() {
-//		PrintWriter pw = null;
-//		try {
-//			pw = new PrintWriter(new FileWriter("data/gosti.csv", false));
-//			for (Gost z : gostLista) {
-//				pw.println(z.toFileString());
-//			}
-//			pw.close();
-//		}
-//		catch (IOException e) {
-//			return false;
-//		}
+		PrintWriter pw = null;
+		try {
+			pw = new PrintWriter(new FileWriter("data/gosti.csv", false));
+			for (Gost z : gostLista) {
+				pw.println(z.toFileString());
+			}
+			pw.close();
+		}
+		catch (IOException e) {
+			return false;
+		}
 		return true;
 	}
 	

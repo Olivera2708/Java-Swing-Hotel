@@ -1,6 +1,7 @@
 package entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import enums.EnumStatusSobe;
@@ -54,6 +55,34 @@ public class Sobe {
 		this.status = status;
 	}
 	
+	public String[] getSadrzaj() {
+		return sadrzaj;
+	}
+
+	public void setSadrzaj(String[] sadrzaj) {
+		this.sadrzaj = sadrzaj;
+	}
+
+	public Zaposleni getSpremacica() {
+		return spremacica;
+	}
+
+	public void setSpremacica(Zaposleni spremacica) {
+		this.spremacica = spremacica;
+	}
+	
+	public boolean sadrzi(String[] sad) {
+		if (sad == null) {
+			return true;
+		}
+		for (String s: sad) {
+			if (!Arrays.asList(this.sadrzaj).contains(s)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public String toFileString() {
 		int id_spremacice = 0;
 		try {
@@ -75,22 +104,6 @@ public class Sobe {
 			sadrzaji = sadrzaji.substring(0, sadrzaji.length()-1);
 		}
 		return brojSobe+";"+tipSobe.getId()+";"+status+";"+id_spremacice+";"+spremanja+";"+sadrzaji;
-	}
-
-	public String[] getSadrzaj() {
-		return sadrzaj;
-	}
-
-	public void setSadrzaj(String[] sadrzaj) {
-		this.sadrzaj = sadrzaj;
-	}
-
-	public Zaposleni getSpremacica() {
-		return spremacica;
-	}
-
-	public void setSpremacica(Zaposleni spremacica) {
-		this.spremacica = spremacica;
 	}
 	
 }

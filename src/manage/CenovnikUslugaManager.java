@@ -50,6 +50,7 @@ public class CenovnikUslugaManager {
 	}
 
 	//cuvanje podataka iz objekta nazad u csv
+	//za potrebe testiranja komentarisati save
 	public boolean saveData() {
 		PrintWriter pw = null;
 		try {

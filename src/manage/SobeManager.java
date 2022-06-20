@@ -66,6 +66,23 @@ public class SobeManager {
 		return sobeLista;
 	}
 	
+	//cuvanje podataka iz objekta nazad u csv
+	//za potrebe testiranja komentarisati save
+	public boolean saveData() {
+		PrintWriter pw = null;
+		try {
+			pw = new PrintWriter(new FileWriter("data/sobe.csv", false));
+			for (Sobe s : sobeLista) {
+				pw.println(s.toFileString());
+			}
+			pw.close();
+		}
+		catch (IOException e) {
+			return false;
+		}
+		return true;
+	}
+	
 	public void dodeliSobuSpremacici(int id) {
 		//za svaku proveriti koliko ima soba da sprema
 		HashMap<Zaposleni, Integer> mapa = new HashMap<Zaposleni, Integer>();
@@ -116,11 +133,28 @@ public class SobeManager {
 				}
 			}
 		}
+		for (Zaposleni z: zaposleniManager.getAll()) {
+			if (z.getPozicija().equals("Sobarica")) {
+				if (!mapa.containsKey(z)){
+					mapa.put(z, 0);
+				}
+			}
+		}
 		
 		return mapa;
 	}
 	
-	public List<Integer> getSlobodneSobe(int tipSobe){
+	public List<Integer> getSlobodneSobe(int tipSobe, String[] sadrzaji){
+		List<Integer> slobodne = new ArrayList<Integer>();
+		for (Sobe s: sobeLista) {
+			if (String.valueOf(s.getStatus()).equals("SLOBODNA") && s.getTipSobe().getId()== tipSobe && s.sadrzi(sadrzaji)) {
+				slobodne.add(s.getBrojSobe());
+			}
+		}
+		return slobodne;
+	}
+	
+	public List<Integer> getSlobodneSobeSlicne(int tipSobe){
 		List<Integer> slobodne = new ArrayList<Integer>();
 		for (Sobe s: sobeLista) {
 			if (String.valueOf(s.getStatus()).equals("SLOBODNA") && s.getTipSobe().getId()== tipSobe) {
@@ -160,6 +194,7 @@ public class SobeManager {
 		return br;
 	}
 	
+	//vraca listu soba za odredjenu sobaricu
 	public List<Sobe> getPosao(Zaposleni sobarica){
 		List<Sobe> sobe = new ArrayList<Sobe>();
 		for (Sobe s: sobeLista) {
@@ -168,22 +203,6 @@ public class SobeManager {
 			}
 		}
 		return sobe;
-	}
-	
-	//cuvanje podataka iz objekta nazad u csv
-	public boolean saveData() {
-		PrintWriter pw = null;
-		try {
-			pw = new PrintWriter(new FileWriter("data/sobe.csv", false));
-			for (Sobe s : sobeLista) {
-				pw.println(s.toFileString());
-			}
-			pw.close();
-		}
-		catch (IOException e) {
-			return false;
-		}
-		return true;
 	}
 	
 	//pronadji sobu po broju sobe

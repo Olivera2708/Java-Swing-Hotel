@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import org.junit.AfterClass;
@@ -26,6 +27,19 @@ public class GostManagerTest {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		System.out.println("Gost test kraj");
+	}
+	
+	@Test
+	public void testAdd() throws ParseException {
+		manageAll.getGostManager().add("GostTest", "GosticTest", "Žensko", datum.parse("1989-10-25"), "0647255798", "Dusana Danilovica 27, Novi Sad", "gosttest@gmail.com", "098765432");
+		int sve = manageAll.getGostManager().getAll().size();
+		assertTrue(sve == 3);
+	}
+	
+	@Test
+	public void getAll() {
+		int test = manageAll.getGostManager().getAll().size();
+		assertTrue(test == 3);
 	}
 	
 	@Test

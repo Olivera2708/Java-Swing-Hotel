@@ -108,16 +108,21 @@ public class GostNovaRezervacijaFrame extends JFrame{
 				String datumOdText = datumOd.getText();
 				String datumDoText = datumDo.getText();
 				
-				int[] lista_usluga = new int[uslugeText.length];
-				List<Usluge> sve_usluge = manageAll.getUslugeManager().getAll();
-				for (int i = 0; i < uslugeText.length; i++) {
-					lista_usluga[i] = sve_usluge.get(uslugeText[i]).getId();
+				if (datumOdText.equals("") || datumDoText.equals("")) {
+					JOptionPane.showMessageDialog(null, "Loš unos datuma.", "Greška", JOptionPane.ERROR_MESSAGE);
 				}
-				try {
-					cena.setText(String.valueOf(manageAll.getRezervacijeManager().cena(manageAll.getTipSobeManager().get_id(tipSobeText), lista_usluga, datum_formatter.parse(datumOdText), datum_formatter.parse(datumDoText), false)));
-				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				else {
+					int[] lista_usluga = new int[uslugeText.length];
+					List<Usluge> sve_usluge = manageAll.getUslugeManager().getAll();
+					for (int i = 0; i < uslugeText.length; i++) {
+						lista_usluga[i] = sve_usluge.get(uslugeText[i]).getId();
+					}
+					try {
+						cena.setText(String.valueOf(manageAll.getRezervacijeManager().cena(manageAll.getTipSobeManager().get_id(tipSobeText), lista_usluga, datum_formatter.parse(datumOdText), datum_formatter.parse(datumDoText), false)));
+					} catch (ParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 			
@@ -141,7 +146,7 @@ public class GostNovaRezervacijaFrame extends JFrame{
 				
 				boolean greska = false;
 				try {
-					if (datum_formatter.parse(datumOdText).after(datum_formatter.parse(datumDoText)) || datum_formatter.parse(datumOdText).equals(datum_formatter.parse(datumDoText)) || datum_formatter.parse(datumOdText).before(new java.util.Date())) {
+					if (datumOdText.equals("") || datumDoText.equals("") || datum_formatter.parse(datumOdText).after(datum_formatter.parse(datumDoText)) || datum_formatter.parse(datumOdText).equals(datum_formatter.parse(datumDoText)) || datum_formatter.parse(datumOdText).before(new java.util.Date())) {
 						JOptionPane.showMessageDialog(null, "Loš unos datuma.", "Greška", JOptionPane.ERROR_MESSAGE);
 						greska = true;
 					}
@@ -191,6 +196,16 @@ public class GostNovaRezervacijaFrame extends JFrame{
 				String datumOdText = datumOd.getText();
 				String datumDoText = datumDo.getText();
 				
+				int[] sadrzajiText = sadrzaji.getSelectedIndices();
+				
+				String[] lista_sadrzaja = null;
+				if (sadrzajiText.length != 0) {
+					lista_sadrzaja = new String[sadrzajiText.length];
+					for (int i = 0; i < sadrzajiText.length; i++) {
+						lista_sadrzaja[i] = dodatne_stvari[sadrzajiText[i]];
+					}
+				}
+				
 				int[] lista_usluga = new int[uslugeText.length];
 				List<Usluge> sve_usluge = manageAll.getUslugeManager().getAll();
 				for (int i = 0; i < uslugeText.length; i++) {
@@ -207,7 +222,7 @@ public class GostNovaRezervacijaFrame extends JFrame{
 						}
 						else {
 							try {
-								proslo = manageAll.getRezervacijeManager().add(manageAll.getTipSobeManager().get_id(tipSobeText), lista_usluga, gost.getId(), datum_formatter.parse(datumOdText), datum_formatter.parse(datumDoText), "NA_CEKANJU");
+								proslo = manageAll.getRezervacijeManager().add(manageAll.getTipSobeManager().get_id(tipSobeText), lista_usluga, gost.getId(), datum_formatter.parse(datumOdText), datum_formatter.parse(datumDoText), "NA_CEKANJU", lista_sadrzaja);
 							} catch (ParseException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();

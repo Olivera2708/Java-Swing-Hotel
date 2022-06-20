@@ -37,6 +37,19 @@ public class CenovnikSobaManagerTest {
 	}
 	
 	@Test
+	public void testAdd() throws ParseException {
+		manageAll.getCenovnikSobaManager().add(tipovi.get(1).getId(), 2000, datum.parse("2022-12-10"), datum.parse("2022-12-15"));
+		int sve = manageAll.getCenovnikSobaManager().getAll().size();
+		assertTrue(sve == 3);
+	}
+	
+	@Test
+	public void getAll() {
+		int test = manageAll.getCenovnikSobaManager().getAll().size();
+		assertTrue(test == 3);
+	}
+	
+	@Test
 	public void testGetCena() throws ParseException {
 		int test = manageAll.getCenovnikSobaManager().get_cena(tipovi.get(0).getId(), datum.parse("2022-08-12"));
 		assertTrue(test == 3000);
