@@ -129,7 +129,13 @@ public class GostMojeRezervacijeFrame extends JFrame{
 				}
 				else {
 					int id = (int) tabela.getValueAt(zaposleni, 0);
-					areYouSure(id);
+					Rezervacije r = manageAll.getRezervacijeManager().find(id);
+					System.out.print(r.getCena());
+					if (String.valueOf(r.getStatus()).equals("ODBIJENA") || String.valueOf(r.getStatus()).equals("OTKAZANA") || (r.getSoba() != null && String.valueOf(r.getStatus()).equals("POTVRDJENA"))) {
+						JOptionPane.showMessageDialog(null, "Status izabrane rezervacije se ne moze promeniti.", "Greška", JOptionPane.ERROR_MESSAGE);
+					}
+					else
+						areYouSure(id);
 				}
 			}
 		});
