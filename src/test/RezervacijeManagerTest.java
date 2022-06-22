@@ -119,6 +119,13 @@ public class RezervacijeManagerTest {
 	}
 	
 	@Test
+	public void testDodelaSobe() {
+		Rezervacije r = manageAll.getRezervacijeManager().getAll().get(3);
+		manageAll.getRezervacijeManager().dodelaSobe(r.getId(), 203);
+		assertTrue(r.getSoba().getBrojSobe() == 203);
+	}
+	
+	@Test
 	public void testPromeniSobe() {
 		Rezervacije r = manageAll.getRezervacijeManager().getAll().get(0);
 		manageAll.getRezervacijeManager().promeniSobe(202, 904);
@@ -167,7 +174,6 @@ public class RezervacijeManagerTest {
 	@Test
 	public void testGetRezervacijePotvrdjene() {
 		List<Rezervacije> rezervacije = new ArrayList<>();
-		rezervacije.add(manageAll.getRezervacijeManager().getAll().get(3));
 		List<Rezervacije> test = manageAll.getRezervacijeManager().getRezervacijePotvrdjene();
 		assertEquals(rezervacije, test);
 	}
@@ -197,7 +203,7 @@ public class RezervacijeManagerTest {
 	@Test
 	public void testGetPrihodi() throws ParseException {
 		int test = manageAll.getRezervacijeManager().getPrihodi(datum.parse("2022-06-01"), datum.parse("2022-07-30"));
-		assertTrue(test == 52500);
+		assertTrue(test == 50000);
 	}
 	
 	@Test

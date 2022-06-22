@@ -44,6 +44,9 @@ public class DolasciOdlasciModel extends AbstractTableModel {
 		case 1:
 			return z.getTipSobe().getTip();
 		case 2:
+			if (z.getSoba() == null) {
+				return "Nije stigao";
+			}
 			if (String.valueOf(z.getSoba().getStatus()).equals("ZAUZETO")){
 				return "Prijavljen";
 			}

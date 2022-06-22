@@ -3,15 +3,27 @@ package entity;
 import java.util.Date;
 
 public abstract class Korisnik {
-	int id;
-	String ime;
-	String prezime;
-	String pol;
-	Date datumRodjenja;
-	String telefon;
-	String adresa;
-	String korisnickoIme;
-	String lozinka;
+	private int id;
+	private String ime;
+	private String prezime;
+	private String pol;
+	private Date datumRodjenja;
+	private String telefon;
+	private String adresa;
+	private String korisnickoIme;
+	private String lozinka;
+	
+	public Korisnik(int id, String ime, String prezime, String pol, Date datum, String telefon, String adresa, String korisnickoIme, String lozinka) {
+		this.id = id;
+		this.ime = ime;
+		this.prezime = prezime;
+		this.datumRodjenja = datum;
+		this.pol = pol;
+		this.telefon = telefon;
+		this.adresa = adresa;
+		this.korisnickoIme = korisnickoIme;
+		this.lozinka = lozinka;
+	}
 
 	
 	public String getLozinka() {

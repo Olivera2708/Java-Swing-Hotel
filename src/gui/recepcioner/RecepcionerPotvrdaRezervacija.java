@@ -249,10 +249,6 @@ public class RecepcionerPotvrdaRezervacija extends JFrame{
 		int vrednost;
 		Rezervacije ir = manageAll.getRezervacijeManager().find(id);
 		
-		int[] lista_usluga = new int[ir.getUsluge().size()];
-		for (int i =0; i < ir.getUsluge().size(); i++) {
-			lista_usluga[i] = ir.getUsluge().get(i).getId();
-		}
 		//provara jel ima slobodnih soba
 		if (manageAll.getRezervacijeManager().brojSlobodnihSoba(ir.getTipSobe().getId(), ir.getOdDatum(), ir.getDoDatum(), ir.getSadrzaj()) == 0) {
 			JOptionPane.showMessageDialog(null, "Ne postoji slobodna soba za ovaj period.", "Greška", JOptionPane.WARNING_MESSAGE);
@@ -266,10 +262,10 @@ public class RecepcionerPotvrdaRezervacija extends JFrame{
 			}
 			if (vrednost == JOptionPane.YES_OPTION) {
 				if (potvrda) {
-					manageAll.getRezervacijeManager().edit(id, ir.getTipSobe().getId(), lista_usluga, ir.getGost().getId(), ir.getOdDatum(), ir.getDoDatum(), "POTVRDJENA", null);
+					manageAll.getRezervacijeManager().editStatus(id, "POTVRDJENA");
 				}
 				else {
-					manageAll.getRezervacijeManager().edit(id, ir.getTipSobe().getId(), lista_usluga, ir.getGost().getId(), ir.getOdDatum(), ir.getDoDatum(), "ODBIJENA", null);
+					manageAll.getRezervacijeManager().editStatus(id, "ODBIJENA");
 				}
 				manageAll.getRezervacijeManager().dodajDatumKraja(ir);
 				osveziTabelu(false);

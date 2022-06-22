@@ -110,7 +110,7 @@ public class RecepcionerDodelaSobe extends JFrame{
 						lista_usluga[i] = sve_usluge.get(uslugeText[i]).getId();
 					}
 					
-					manageAll.getRezervacijeManager().edit(rezervacija.getId(), rezervacija.getTipSobe().getId(), lista_usluga, rezervacija.getGost().getId(), rezervacija.getOdDatum(), rezervacija.getDoDatum(), "POTVRDJENA", manageAll.getSobeManager().find(sobeBroj));
+					manageAll.getRezervacijeManager().dodelaSobe(rezervacija.getId(), sobeBroj);
 					manageAll.getSobeManager().find(sobeBroj).setStatus(EnumStatusSobe.ZAUZETO);
 					manageAll.getSobeManager().saveData();
 					

@@ -126,6 +126,13 @@ public class RezervacijeManager {
 		return true;
 	}
 	
+	public boolean dodelaSobe(int id, int broj) {
+		Rezervacije s = this.find(id);
+		s.setSoba(sobeManager.find(broj));
+		this.saveData();
+		return true;
+	}
+	
 	public void promeniSobe(int stari, int novi) {
 		for (Rezervacije r: rezervacijeLista) {
 			if (r.getSoba() != null) {
