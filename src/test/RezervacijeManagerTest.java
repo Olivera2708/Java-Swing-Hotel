@@ -143,7 +143,7 @@ public class RezervacijeManagerTest {
 	public void testDodajDatumKraja() {
 		Rezervacije r = manageAll.getRezervacijeManager().getAll().get(1);
 		manageAll.getRezervacijeManager().dodajDatumKraja(r);
-		assertEquals(r.getKonacanDatum(), new Date());
+		assertEquals(datum.format(r.getKonacanDatum()), datum.format(new Date()));
 	}
 	
 	@Test
@@ -203,7 +203,7 @@ public class RezervacijeManagerTest {
 	@Test
 	public void testGetPrihodi() throws ParseException {
 		int test = manageAll.getRezervacijeManager().getPrihodi(datum.parse("2022-06-01"), datum.parse("2022-07-30"));
-		assertTrue(test == 50000);
+		assertTrue(test == 47500);
 	}
 	
 	@Test
