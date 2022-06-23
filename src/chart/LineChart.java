@@ -27,7 +27,7 @@ public class LineChart implements MainChart<XYChart>{
 		XYChart chart = new XYChartBuilder().width(800).height(600).title("Prihodi po tipu sobe").build();
 		chart.getStyler().setLegendPosition(LegendPosition.InsideNW);
 	    chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
-	    chart.getStyler().setDatePattern("yyyy-MMM");
+	    chart.getStyler().setDatePattern("yy-MMM");
 	    
 	    HashMap<TipSobe, LinkedHashMap<EnumMeseci, Integer>> maps = rezervacijeManager.getPrihodiPoTipu();
 	    LinkedHashMap<EnumMeseci, Integer> ukupno = rezervacijeManager.getUkupno();

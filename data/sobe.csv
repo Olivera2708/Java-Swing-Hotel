@@ -1,3 +1,12 @@
-202;36;SLOBODNA;0;;
-203;36;SLOBODNA;0;;TV,Klima
-204;53;SLOBODNA;0;;Balkon, Klima
+101;1;SLOBODNA;0;;Klima,Pušačka
+102;2;SLOBODNA;0;;Balkon,Pušačka,Klima
+103;1;SLOBODNA;0;;TV,Balkon,Nepušačka
+104;3;SLOBODNA;0;;Klima,Nepučaška
+201;2;SLOBODNA;0;;Klima,Pušačka
+202;2;SLOBODNA;0;;TV,Balkon,Nepušačka
+203;1;SLOBODNA;0;;Balkon,Pušačka,Klima
+204;4;SLOBODNA;0;;Klima,Pušačka
+301;1;SLOBODNA;0;;TV,Balkon,Nepušačka
+302;2;SLOBODNA;0;;TV,Balkon,Nepušačka
+303;4;SLOBODNA;0;;Klima,Nepučaška
+304;3;SLOBODNA;0;;Balkon,Pušačka,Klima

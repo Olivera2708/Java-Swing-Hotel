@@ -1,6 +1,6 @@
 package chart;
 
-import java.awt.Color;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -28,13 +28,16 @@ public class PieChart30Dana implements MainChart<PieChart>{
 			title = "Opterećenje sobarica u prethodnih 30 dana";
 		}
 		else {
-			title = "Status reervacija u prethodnih 30 dana";
+			title = "Status rezervacija u prethodnih 30 dana";
 		}
 		
 		PieChart chart = new PieChartBuilder().width(800).height(600).title(title).build();
 	    
 	    Date danas = new Date();
-	    Date pocetni = new Date(danas.getTime() - 30 * (1000 * 60 * 60 * 24));
+	    final Calendar cal = Calendar.getInstance();
+	    cal.add(Calendar.DATE, -30);
+	    Date pocetni = cal.getTime();
+	    
 	    if (sobarice) {
 	    	HashMap<Zaposleni, Integer> maps = sobeManager.getBrojSobaPoSobarici(pocetni, danas);
 		    

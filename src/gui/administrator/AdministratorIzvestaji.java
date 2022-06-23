@@ -180,7 +180,6 @@ public class AdministratorIzvestaji extends JFrame{
 					}
 					else {
 						HashMap <Sobe, Integer[]> sobe = manageAll.getRezervacijeManager().prikazSoba(odDatum, doDatum);
-						
 						AdministratorIzvestaj3 izv = new AdministratorIzvestaj3(sobe);
 						izv.setVisible(true);
 					}

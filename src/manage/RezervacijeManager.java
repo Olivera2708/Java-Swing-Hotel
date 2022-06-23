@@ -319,54 +319,36 @@ public class RezervacijeManager {
 	//za izvestaje
 	public HashMap<Sobe, Integer[]> prikazSoba(Date datumOd, Date datumDo){
 		HashMap<Sobe, Integer[]> mapa = new HashMap<Sobe, Integer[]>();
+		for (Sobe s: sobeManager.getAll()) {
+			Integer[] lista = {0, 0};
+			mapa.put(s, lista);
+		}
+		
+		
 		for (Rezervacije r: rezervacijeLista) {
 			//proverim samo da li je soba bila rezervisana u tom periodu, od do
 			if (String.valueOf(r.getStatus()).equals("POTVRDJENA")) {
 				SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
 				int dana = (int) Math.abs(ChronoUnit.DAYS.between(r.getDoDatum().toInstant(), r.getOdDatum().toInstant()));
 				if ((datumOd.before(r.getOdDatum()) || datum.format(datumOd).equals(datum.format(r.getOdDatum()))) && (datumDo.after(r.getDoDatum()) || datum.format(datumDo).equals(datum.format(r.getDoDatum())))) {
-					if (mapa.containsKey(r.getSoba())) {
-						Integer[] lista = mapa.get(r.getSoba());
-						lista[0] += (int) ChronoUnit.DAYS.between(r.getOdDatum().toInstant(), r.getDoDatum().toInstant());
-						lista[1] += r.getCena();
-						mapa.put(r.getSoba(), lista);
-					}
-					else {
-						Integer[] lista = new Integer[2];
-						lista[0] = (int) ChronoUnit.DAYS.between(r.getOdDatum().toInstant(), r.getDoDatum().toInstant());
-						lista[1] = r.getCena();
-						mapa.put(r.getSoba(), lista);
-					}
+					Integer[] lista = mapa.get(r.getSoba());
+					lista[0] += (int) ChronoUnit.DAYS.between(r.getOdDatum().toInstant(), r.getDoDatum().toInstant());
+					lista[1] += r.getCena();
+					mapa.put(r.getSoba(), lista);
 				}
 				else if (datumOd.before(r.getOdDatum()) || datum.format(datumOd).equals(datum.format(r.getOdDatum()))) {
 					int broj_nocenja = (int) Math.abs(ChronoUnit.DAYS.between(r.getOdDatum().toInstant(), datumOd.toInstant()));
-					if (mapa.containsKey(r.getSoba())) {
-						Integer[] lista = mapa.get(r.getSoba());
-						lista[0] += broj_nocenja;
-						lista[1] += (int) r.getCena()/dana*broj_nocenja;
-						mapa.put(r.getSoba(), lista);
-					}
-					else {
-						Integer[] lista = new Integer[2];
-						lista[0] = broj_nocenja;
-						lista[1] = (int) r.getCena()/dana*broj_nocenja;
-						mapa.put(r.getSoba(), lista);
-					}
+					Integer[] lista = mapa.get(r.getSoba());
+					lista[0] += broj_nocenja;
+					lista[1] += (int) r.getCena()/dana*broj_nocenja;
+					mapa.put(r.getSoba(), lista);
 				}
 				else if (datumDo.after(r.getDoDatum()) || datum.format(datumDo).equals(datum.format(r.getDoDatum()))) {
 					int broj_nocenja = (int) Math.abs(ChronoUnit.DAYS.between(r.getDoDatum().toInstant(), datumDo.toInstant()));
-					if (mapa.containsKey(r.getSoba())) {
-						Integer[] lista = mapa.get(r.getSoba());
-						lista[0] += broj_nocenja;
-						lista[1] += (int) r.getCena()/dana*broj_nocenja;
-						mapa.put(r.getSoba(), lista);
-					}
-					else {
-						Integer[] lista = new Integer[2];
-						lista[0] = broj_nocenja;
-						lista[1] = (int) r.getCena()/dana*broj_nocenja;
-						mapa.put(r.getSoba(), lista);
-					}
+					Integer[] lista = mapa.get(r.getSoba());
+					lista[0] += broj_nocenja;
+					lista[1] += (int) r.getCena()/dana*broj_nocenja;
+					mapa.put(r.getSoba(), lista);
 				}
 			}
 		}
