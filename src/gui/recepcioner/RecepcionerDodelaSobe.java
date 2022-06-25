@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
@@ -85,10 +86,13 @@ public class RecepcionerDodelaSobe extends JFrame{
 		naslov.setFont(naslov.getFont().deriveFont(18f));
 		panel.add(naslov, "center, span 2");
 		
+		JScrollPane skrol = new JScrollPane(usluge);
+		skrol.setPreferredSize(new Dimension(80, 60));
+		
 		panel.add(new JLabel("Broj sobe"));
 		panel.add(sobe, "right, wrap, grow");
 		panel.add(new JLabel("Usluge (pritisnite cmd za označavanje više usluga)"));
-		panel.add(usluge, "right, wrap, grow");
+		panel.add(skrol, "right, wrap, grow");
 		
 		panel.add(btnKreiraj, "center, span 2");
 		

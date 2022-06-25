@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -76,19 +77,25 @@ public class GostNovaRezervacijaFrame extends JFrame{
 		naslov.setFont(naslov.getFont().deriveFont(18f));
 		panel.add(naslov, "center, span 2");
 		
+		JScrollPane skrol = new JScrollPane(usluge);
+		skrol.setPreferredSize(new Dimension(80, 60));
+		
+		JScrollPane skrol_sadrzaji = new JScrollPane(sadrzaji);
+		skrol.setPreferredSize(new Dimension(80, 60));
+		
 		panel.add(new JLabel("Datum od"));
 		panel.add(datumOd, "right, wrap, grow");
 		panel.add(new JLabel("Datum do"));
 		panel.add(datumDo, "right, wrap, grow");
 		panel.add(new JLabel("Sadržaji"));
-		panel.add(sadrzaji, "right, wrap, grow");
+		panel.add(skrol_sadrzaji, "right, wrap, grow");
 		
 		panel.add(btnPretraga, "center, span 2");
 		
 		panel.add(new JLabel("Tip sobe"));
 		panel.add(tipSobe, "right, wrap, grow");
 		panel.add(new JLabel("Usluge (pritisnite cmd za označavanje više usluga)"));
-		panel.add(usluge, "right, wrap, grow");
+		panel.add(skrol, "right, wrap, grow");
 		
 		panel.add(btnIzracunaj, "center, span 2");
 		panel.add(new JLabel("Cena"));
