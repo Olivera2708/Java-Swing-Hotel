@@ -93,7 +93,6 @@ public class AdministratorIzmenaGosta extends JFrame{
 		panel.add(telefon, "right, wrap, grow");
 		panel.add(new JLabel("Datum rođenja"));
 		panel.add(datum, "right, wrap, grow");
-		panel.add(new JLabel("Pozicija"));
 		
 		panel.add(btnKreiraj, "center, span 2");
 		

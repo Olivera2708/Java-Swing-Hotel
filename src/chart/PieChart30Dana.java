@@ -11,7 +11,7 @@ import entity.Zaposleni;
 import manage.RezervacijeManager;
 import manage.SobeManager;
 
-public class PieChart30Dana implements MainChart<PieChart>{
+public class PieChart30Dana{
 	SobeManager sobeManager;
 	RezervacijeManager rezervacijeManager;
 	boolean sobarice;

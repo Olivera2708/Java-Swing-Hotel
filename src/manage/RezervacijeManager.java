@@ -205,7 +205,7 @@ public class RezervacijeManager {
 		List<Rezervacije> rezervacije = new ArrayList<>();
 		for (Rezervacije r: rezervacijeLista) {
 			SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
-			if (datum.format(r.getOdDatum()).equals(datum.format(new Date()))){
+			if (datum.format(r.getOdDatum()).equals(datum.format(new Date())) && String.valueOf(r.getStatus()).equals("POTVRDJENA")){
 				rezervacije.add(r);
 			}
 		}
@@ -216,7 +216,7 @@ public class RezervacijeManager {
 		List<Rezervacije> rezervacije = new ArrayList<>();
 		for (Rezervacije r: rezervacijeLista) {
 			SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
-			if (datum.format(r.getDoDatum()).equals(datum.format(new Date()))){
+			if (datum.format(r.getDoDatum()).equals(datum.format(new Date())) && String.valueOf(r.getStatus()).equals("POTVRDJENA")){
 				rezervacije.add(r);
 			}
 		}

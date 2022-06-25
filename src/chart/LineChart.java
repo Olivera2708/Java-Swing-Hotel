@@ -16,7 +16,7 @@ import entity.TipSobe;
 import enums.EnumMeseci;
 import manage.RezervacijeManager;
 
-public class LineChart implements MainChart<XYChart>{
+public class LineChart{
 	RezervacijeManager rezervacijeManager;
 	
 	public LineChart(RezervacijeManager rezervacijeManager) {

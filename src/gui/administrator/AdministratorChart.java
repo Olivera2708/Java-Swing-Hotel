@@ -11,7 +11,6 @@ import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.XYChart;
 
 import chart.LineChart;
-import chart.MainChart;
 import chart.PieChart30Dana;
 import manage.ManageAll;
 
@@ -32,19 +31,19 @@ public class AdministratorChart extends JFrame {
 	
 	private void ChartGUI() {
 		if (broj == 1) {
-			MainChart<PieChart> sobarica = new PieChart30Dana(manageAll.getSobeManager(), manageAll.getRezervacijeManager(), true);
+			PieChart30Dana sobarica = new PieChart30Dana(manageAll.getSobeManager(), manageAll.getRezervacijeManager(), true);
 			PieChart chart = sobarica.getChart();
 			JPanel chartPanel = new XChartPanel<PieChart>(chart);
 			this.getContentPane().add(chartPanel, BorderLayout.CENTER);
 		}
 		else if (broj == 2) {
-			MainChart<PieChart> sobarica = new PieChart30Dana(manageAll.getSobeManager(), manageAll.getRezervacijeManager(), false);
+			PieChart30Dana sobarica = new PieChart30Dana(manageAll.getSobeManager(), manageAll.getRezervacijeManager(), false);
 			PieChart chart = sobarica.getChart();
 			JPanel chartPanel = new XChartPanel<PieChart>(chart);
 			this.getContentPane().add(chartPanel, BorderLayout.CENTER);
 		}
 		else {
-			MainChart<XYChart> sobarica = new LineChart(manageAll.getRezervacijeManager());
+			LineChart sobarica = new LineChart(manageAll.getRezervacijeManager());
 			XYChart chart = sobarica.getChart();
 			JPanel chartPanel = new XChartPanel<XYChart>(chart);
 			this.getContentPane().add(chartPanel, BorderLayout.CENTER);

@@ -55,7 +55,7 @@ public class UslugeManager {
 	public boolean saveData() {
 		PrintWriter pw = null;
 		try {
-			pw = new PrintWriter(new FileWriter("data/tipsoba.csv", false));
+			pw = new PrintWriter(new FileWriter("data/usluge.csv", false));
 			for (Usluge s : uslugeLista) {
 				pw.println(s.toFileString());
 			}
