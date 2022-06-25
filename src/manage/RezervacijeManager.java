@@ -238,15 +238,12 @@ public class RezervacijeManager {
 	public int getPrihodi(Date datumOd, Date datumDo) {
 		int prihodi = 0;
 		
-		int dani = (int) ChronoUnit.DAYS.between(datumOd.toInstant(), datumDo.toInstant());
-		for (int i = 0; i <= dani; i++) {
-			Date danas = new Date(datumOd.getTime() + i * (1000 * 60 * 60 * 24));
-			for (Rezervacije r: rezervacijeLista) {
-				if (!String.valueOf(r.getStatus()).equals("OTKAZANA") && !String.valueOf(r.getStatus()).equals("NA_CEKANJU")) {
-					SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
-					if (datum.format(r.getKonacanDatum()).equals(datum.format(danas))) {
-						prihodi += r.getCena();
-					}
+		for (Rezervacije r: rezervacijeLista) {
+			if (!String.valueOf(r.getStatus()).equals("ODBIJENA") && !String.valueOf(r.getStatus()).equals("NA_CEKANJU")) {
+				SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
+				if ((r.getKonacanDatum().after(datumOd) && r.getKonacanDatum().before(datumDo)) || 
+						datum.format(r.getKonacanDatum()).equals(datum.format(datumOd)) || datum.format(r.getKonacanDatum()).equals(datum.format(datumDo))) {
+					prihodi += r.getCena();
 				}
 			}
 		}
