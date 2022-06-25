@@ -320,11 +320,10 @@ public class RezervacijeManager {
 			Integer[] lista = {0, 0};
 			mapa.put(s, lista);
 		}
-		
-		
+			
 		for (Rezervacije r: rezervacijeLista) {
 			//proverim samo da li je soba bila rezervisana u tom periodu, od do
-			if (String.valueOf(r.getStatus()).equals("POTVRDJENA")) {
+			if (String.valueOf(r.getStatus()).equals("POTVRDJENA") && r.getSoba() != null) {
 				SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
 				int dana = (int) Math.abs(ChronoUnit.DAYS.between(r.getDoDatum().toInstant(), r.getOdDatum().toInstant()));
 				if ((datumOd.before(r.getOdDatum()) || datum.format(datumOd).equals(datum.format(r.getOdDatum()))) && (datumDo.after(r.getDoDatum()) || datum.format(datumDo).equals(datum.format(r.getDoDatum())))) {
@@ -333,15 +332,16 @@ public class RezervacijeManager {
 					lista[1] += r.getCena();
 					mapa.put(r.getSoba(), lista);
 				}
-				else if (datumOd.before(r.getOdDatum()) || datum.format(datumOd).equals(datum.format(r.getOdDatum()))) {
-					int broj_nocenja = (int) Math.abs(ChronoUnit.DAYS.between(r.getOdDatum().toInstant(), datumOd.toInstant()));
+				else if ((datumOd.before(r.getDoDatum()) || datum.format(datumOd).equals(datum.format(r.getDoDatum()))) && (datumDo.after(r.getDoDatum()) || datum.format(datumDo).equals(datum.format(r.getDoDatum())))) {
+					int broj_nocenja = (int) ChronoUnit.DAYS.between(datumOd.toInstant(), r.getDoDatum().toInstant());
 					Integer[] lista = mapa.get(r.getSoba());
+					System.out.println(r.getId());
 					lista[0] += broj_nocenja;
 					lista[1] += (int) r.getCena()/dana*broj_nocenja;
 					mapa.put(r.getSoba(), lista);
 				}
-				else if (datumDo.after(r.getDoDatum()) || datum.format(datumDo).equals(datum.format(r.getDoDatum()))) {
-					int broj_nocenja = (int) Math.abs(ChronoUnit.DAYS.between(r.getDoDatum().toInstant(), datumDo.toInstant()));
+				else if ((datumDo.after(r.getOdDatum()) || datum.format(datumDo).equals(datum.format(r.getOdDatum()))) && (datumOd.before(r.getOdDatum()) || datum.format(datumOd).equals(datum.format(r.getOdDatum())))) {
+					int broj_nocenja = (int) ChronoUnit.DAYS.between(datumOd.toInstant(), r.getOdDatum().toInstant());
 					Integer[] lista = mapa.get(r.getSoba());
 					lista[0] += broj_nocenja;
 					lista[1] += (int) r.getCena()/dana*broj_nocenja;
@@ -356,11 +356,8 @@ public class RezervacijeManager {
 	public int getRashodi(Date odDatum, Date doDatum) {
 		int rashodi = 0;
 		int meseci = 0;
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(doDatum);
-		meseci += cal.get(Calendar.MONTH);
-		cal.setTime(odDatum);
-		meseci -= cal.get(Calendar.MONTH);
+		meseci = (int) ChronoUnit.DAYS.between(odDatum.toInstant(), doDatum.toInstant());
+		meseci /= 30;
 		
 		for (Zaposleni z: zaposleniManager.getAll()) {
 			rashodi += z.getPlata();
