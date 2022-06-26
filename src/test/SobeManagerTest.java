@@ -87,7 +87,7 @@ public class SobeManagerTest {
 		Zaposleni z = manageAll.getZaposleniManager().getAll().get(0);
 		Date danas = new Date();
 		HashMap<Zaposleni, Integer> test = manageAll.getSobeManager().getBrojSobaPoSobarici(danas, danas);
-		assertTrue(test.get(z) == 2);
+		assertTrue(test.get(z) == 0);
 	}
 	
 	@Test

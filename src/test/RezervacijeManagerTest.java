@@ -202,8 +202,8 @@ public class RezervacijeManagerTest {
 	
 	@Test
 	public void testGetPrihodi() throws ParseException {
-		int test = manageAll.getRezervacijeManager().getPrihodi(datum.parse("2022-06-01"), datum.parse("2022-07-30"));
-		assertTrue(test == 42500);
+		int test = manageAll.getRezervacijeManager().getPrihodi(datum.parse("2022-05-01"), datum.parse("2022-05-30"));
+		assertTrue(test == 0);
 	}
 	
 	@Test
