@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -124,12 +125,23 @@ public class SobeManager {
 			List<String[]> sve = s.getDatumiSpremanja();
 			for (String[] string: sve) {
 				//proverim jel u mapi imam vec string[0] zaposleni ako imam +1 ako ne onda 1
+				SimpleDateFormat datum = new SimpleDateFormat("yyyy-MM-dd");
+				
 				Zaposleni z = zaposleniManager.find(Integer.parseInt(string[0]));
-				if (mapa.containsKey(z)) {
-					mapa.put(z, mapa.get(z)+1);
-				}
-				else {
-					mapa.put(z,  1);
+				Date spremanje;
+				try {
+					spremanje = datum.parse(string[1]);
+					if (spremanje.after(odDatum) && spremanje.before(doDatum)) {
+						if (mapa.containsKey(z)) {
+							mapa.put(z, mapa.get(z)+1);
+						}
+						else {
+							mapa.put(z,  1);
+						}
+					}
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}
