@@ -101,6 +101,8 @@ public class MainFrame extends JFrame{
 			this.setVisible(false);
 			this.dispose();
 			GostFrame gostFrame = new GostFrame(g);
+			this.setVisible(false);
+			this.dispose();
 			gostFrame.setVisible(true);
 		}
 		else {
@@ -109,14 +111,20 @@ public class MainFrame extends JFrame{
 				switch(z.getPozicija()) {
 				case "Recepcioner":
 					RecepcionerFrame recepcionerFrame = new RecepcionerFrame(z);
+					this.setVisible(false);
+					this.dispose();
 					recepcionerFrame.setVisible(true);
 					break;
 				case "Administrator":
 					AdministratorFrame administratorFrame = new AdministratorFrame(z);
+					this.setVisible(false);
+					this.dispose();
 					administratorFrame.setVisible(true);
 					break;
 				case "Sobarica":
 					SobaricaFrame sobaricaFrame = new SobaricaFrame(z);
+					this.setVisible(false);
+					this.dispose();
 					sobaricaFrame.setVisible(true);
 				}
 			}
